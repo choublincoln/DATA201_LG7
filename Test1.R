@@ -5,3 +5,5 @@ age <- 40
 
 name   # output "John"
 age 
+
+"This is Daniel's editing."

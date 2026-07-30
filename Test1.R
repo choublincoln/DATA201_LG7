@@ -32,3 +32,5 @@ age
 
 Lincoln <- "Lincoln editing the main branch!!"
 Ean <- "Ayo"
+
+"Different merge conflict test."

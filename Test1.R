@@ -7,8 +7,9 @@ status
 Test1 <- 1 + 1
 
 
-
-
+library(utils)
+install.packages("ggplot2")
+library("ggplot2")
 
 
 
@@ -33,4 +34,4 @@ age
 Lincoln <- "Lincoln editing the main branch!!"
 Ean <- "Ayo"
 
-"Different merge conflict test."
+"Testing merge conflict."

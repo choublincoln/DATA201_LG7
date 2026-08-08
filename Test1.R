@@ -1,6 +1,6 @@
 library(tidyverse)
 # chosen data-set we're focused on 
-data_october <- read_csv("data/listings_october.csv") |>
+data_october <- read_csv("data/listings_october.csv") |> # |> is a pipe basically meaning "and then"
   filter(neighbourhood_group == "Christchurch City") |> # filters for Christchurch City.
   mutate(month = "October", year = 2025) # creates new columns with their assigned values.
 

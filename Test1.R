@@ -10,7 +10,15 @@ data_november <- read_csv("data/listings_november.csv") |>
   mutate(month = "November", year = 2025)
 
 
+#Ean's
+data_december <- read_csv("data/listings_december.csv") |> # |> is a pipe basically meaning "and then"
+  filter(neighbourhood_group == "Christchurch City") |> # filters for Christchurch City.
+  mutate(month = "December", year = 2025) # creates new columns with their assigned values.
 
+
+data_january <- read_csv("data/listings_january.csv") |>
+  filter(neighbourhood_group == "Christchurch City") |>
+  mutate(month = "January", year = 2026)
 
 
 

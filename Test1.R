@@ -60,6 +60,7 @@ write.csv(listings_oct_to_june, "data/listings_oct_to_june.csv", row.names = FAL
 
 ## Data Wrangling Pipeline from here down below write your code down here
 ## COPY AND PASTE EVERYTHING FROM THE MAIN BRANCH AND PASTE IT IN YOUR OWN BRANCH.
+## COMMIT AND PUSH IT SO ALL BRANCHES ARE SYNCED
 ## then start working on your workflow with the template of the no code solution.
 
 

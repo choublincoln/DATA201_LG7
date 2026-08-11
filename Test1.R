@@ -147,19 +147,6 @@ ggplot(listings_Lincoln_filtered,
        x = "Price ($NZD)",
        y = "Number of Listings") + # Labels
   theme_bw()
-
-
-
-ggplot(listings_Lincoln_filtered, aes(x = price)) +
-  geom_histogram(
-    breaks = c(0, 50, 100, 200, 500, 1000, Inf)
-  ) +
-  labs(
-    title = "Price Distribution",
-    x = "Price ($)",
-    y = "Number of Listings"
-  ) +
-  theme_bw()
 #--- 
 
 # Daniel

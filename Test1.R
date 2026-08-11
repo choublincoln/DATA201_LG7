@@ -66,7 +66,7 @@ write.csv(listings_oct_to_june, "data/listings_oct_to_june.csv", row.names = FAL
 #___________________________________________________________________________________________________
 
 ## Discover
-listings_oct_to_june <- read_csv("data/listings_oct_to_june.csv")
+listings_oct_to_june <- read_csv("data/listings_oct_to_june.csv") # MUST RUN
 
 # Lincoln
 
@@ -89,7 +89,7 @@ data1|>
 "Column Filter that drops unecessary Columns"
 listings_oct_to_june <- listings_oct_to_june |>
   select(-host_id, -host_name, -room_type, -minimum_nights, -calculated_host_listings_count,
-         -availability_365, -license)
+         -availability_365, -license) # MUST RUN
 # Lincoln
 
 

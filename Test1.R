@@ -63,11 +63,15 @@ write.csv(listings_oct_to_june, "data/listings_oct_to_june.csv", row.names = FAL
 ## COMMIT AND PUSH IT SO ALL BRANCHES ARE SYNCED
 ## then start working on your workflow with the template of the no code solution.
 
-
+#___________________________________________________________________________________________________
 
 ## Discover
 listings_oct_to_june <- read_csv("data/listings_oct_to_june.csv")
 
+# Lincoln
+
+
+#--- means your code should stop here for each part (helps prevent merging conflicts)
 
 
 # Pallima statistics will be here
@@ -77,36 +81,88 @@ sd(data1$price,na.rm=TRUE)
 nrow(data1)
 data1|>
   count(host_name)
+#---
 
-
-
+#___________________________________________________________________________________________________
 
 ## Structure
 "Column Filter that drops unecessary Columns"
 listings_oct_to_june <- listings_oct_to_june |>
   select(-host_id, -host_name, -room_type, -minimum_nights, -calculated_host_listings_count,
          -availability_365, -license)
+# Lincoln
 
 
+#--- means your code should stop here for each part (helps prevent merging conflicts)
+
+# Daniel
 
 
+#---
+
+# Ean
+
+
+#---
+
+#___________________________________________________________________________________________________
 
 ## Clean
 
+# Lincoln
 
 
+#--- 
 
+# Daniel
+
+
+#---
+
+# Ean
+
+
+#---
+
+#___________________________________________________________________________________________________
 
 ## Enrich
 
+# Lincoln
 
 
+#--- 
 
+# Daniel
+
+
+#---
+
+# Ean
+
+
+#---
+
+#___________________________________________________________________________________________________
 
 ## Publish
 
+# Lincoln
 
 
+#--- 
+
+# Daniel
+
+
+#---
+
+# Ean
+
+
+#---
+
+#___________________________________________________________________________________________________
 
 
 

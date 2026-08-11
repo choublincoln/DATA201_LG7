@@ -41,8 +41,8 @@ data_june <- read_csv("data/listings_june.csv") |>
 
 # Combining the listings from October 2025 to June 2026
 listings_oct_to_june <- bind_rows(data_october, data_november, data_december,
-                              data_january, data_february, data_march,
-                              data_april, data_may, data_june)
+                                  data_january, data_february, data_march,
+                                  data_april, data_may, data_june)
 
 # Run Only Once to download the concatenated data-set in your data file
 write.csv(listings_oct_to_june, "data/listings_oct_to_june.csv", row.names = FALSE)

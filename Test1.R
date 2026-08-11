@@ -1,37 +1,176 @@
-Test1 <- 1 + 1
-Test1
-status <- "This is working."
-status
+"what to do up here: Basically run all this code all the way down until line 46
+ you only want to do this ONCE ONLY!!"
 
-"Testing Merging"
-Test1 <- 1 + 1
+library(tidyverse)
+# chosen data-set we're focused on 
+data_october <- read_csv("data/listings_october.csv") |> # |> is a pipe basically meaning "and then"
+  filter(neighbourhood_group == "Christchurch City") |> # filters for Christchurch City.
+  mutate(month = "October", year = 2025) # creates new columns with their assigned values.
+
+data_november <- read_csv("data/listings_november.csv") |>
+  filter(neighbourhood_group == "Christchurch City") |>
+  mutate(month = "November", year = 2025)
+
+data_december <- read_csv("data/listings_december.csv") |>
+  filter(neighbourhood_group == "Christchurch City") |>
+  mutate(month = "December", year = 2025)
+
+data_january <- read_csv("data/listings_january.csv") |>
+  filter(neighbourhood_group == "Christchurch City") |>
+  mutate(month = "January", year = 2026)
+
+data_february <- read_csv("data/listings_february.csv") |>
+  filter(neighbourhood_group == "Christchurch City") |>
+  mutate(month = "February", year = 2026)
+
+data_march <- read_csv("data/listings_march.csv") |>
+  filter(neighbourhood_group == "Christchurch City") |>
+  mutate(month = "March", year = 2026)
+
+data_april <- read_csv("data/listings_april.csv") |>
+  filter(neighbourhood_group == "Christchurch City") |>
+  mutate(month = "April", year = 2026)
+
+data_may <- read_csv("data/listings_may.csv") |>
+  filter(neighbourhood_group == "Christchurch City") |>
+  mutate(month = "May", year = 2026)
+
+data_june <- read_csv("data/listings_june.csv") |>
+  filter(neighbourhood_group == "Christchurch City") |>
+  mutate(month = "June", year = 2026)
+
+# Combining the listings from October 2025 to June 2026
+listings_oct_to_june <- bind_rows(data_october, data_november, data_december,
+                                  data_january, data_february, data_march,
+                                  data_april, data_may, data_june)
+
+# Run Only Once to download the concatenated data-set in your data file
+write.csv(listings_oct_to_june, "data/listings_oct_to_june.csv", row.names = FALSE)
 
 
-library(utils)
-install.packages("ggplot2")
-library("ggplot2")
 
 
 
 
 
 
-hi <- "Branch"
-Test1 <- 1 + 1
-Test1 <- 1 + 1
-
-# Test1 <- 1 + 1
-# Test1
-status <- "This is working"
-age <- 40
-
-name   # output "John"
-age 
-
-"This is Daniel's editing."
 
 
-Lincoln <- "Lincoln editing the main branch!!"
-Ean <- "Ayo"
 
-"Testing merge conflict."
+
+## Data Wrangling Pipeline from here down below write your code down here
+## COPY AND PASTE EVERYTHING FROM THE MAIN BRANCH AND PASTE IT IN YOUR OWN BRANCH.
+## COMMIT AND PUSH IT SO ALL BRANCHES ARE SYNCED
+## then start working on your workflow with the template of the no code solution.
+
+#___________________________________________________________________________________________________
+
+## Discover
+listings_oct_to_june <- read_csv("data/listings_oct_to_june.csv")
+
+# Lincoln
+
+
+#--- means your code should stop here for each part (helps prevent merging conflicts)
+
+
+# Pallima statistics will be here
+min(data1$price,na.rm=TRUE)
+max(data1$price,na.rm=TRUE)
+sd(data1$price,na.rm=TRUE)
+nrow(data1)
+data1|>
+  count(host_name)
+#---
+
+#___________________________________________________________________________________________________
+
+## Structure
+"Column Filter that drops unecessary Columns"
+listings_oct_to_june <- listings_oct_to_june |>
+  select(-host_id, -host_name, -room_type, -minimum_nights, -calculated_host_listings_count,
+         -availability_365, -license)
+# Lincoln
+
+
+#--- means your code should stop here for each part (helps prevent merging conflicts)
+
+# Daniel
+
+
+#---
+
+# Ean
+
+
+#---
+
+#___________________________________________________________________________________________________
+
+## Clean
+
+# Lincoln
+
+
+#--- 
+
+# Daniel
+
+
+#---
+
+# Ean
+
+
+#---
+
+#___________________________________________________________________________________________________
+
+## Enrich
+
+# Lincoln
+
+
+#--- 
+
+# Daniel
+
+
+#---
+
+# Ean
+
+
+#---
+
+#___________________________________________________________________________________________________
+
+## Publish
+
+# Lincoln
+
+
+#--- 
+
+# Daniel
+
+
+#---
+
+# Ean
+
+
+#---
+
+#___________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+
+

@@ -41,8 +41,8 @@ data_june <- read_csv("data/listings_june.csv") |>
 
 # Combining the listings from October 2025 to June 2026
 listings_oct_to_june <- bind_rows(data_october, data_november, data_december,
-                              data_january, data_february, data_march,
-                              data_april, data_may, data_june)
+                                  data_january, data_february, data_march,
+                                  data_april, data_may, data_june)
 
 # Run Only Once to download the concatenated data-set in your data file
 write.csv(listings_oct_to_june, "data/listings_oct_to_june.csv", row.names = FALSE)
@@ -63,11 +63,15 @@ write.csv(listings_oct_to_june, "data/listings_oct_to_june.csv", row.names = FAL
 ## COMMIT AND PUSH IT SO ALL BRANCHES ARE SYNCED
 ## then start working on your workflow with the template of the no code solution.
 
-
+#___________________________________________________________________________________________________
 
 ## Discover
 listings_oct_to_june <- read_csv("data/listings_oct_to_june.csv")
 
+# Lincoln
+
+
+#--- means your code should stop here for each part (helps prevent merging conflicts)
 
 
 # Pallima statistics will be here
@@ -77,36 +81,94 @@ sd(data1$price,na.rm=TRUE)
 nrow(data1)
 data1|>
   count(host_name)
+#---
 
-
-
+#___________________________________________________________________________________________________
 
 ## Structure
 "Column Filter that drops unecessary Columns"
 listings_oct_to_june <- listings_oct_to_june |>
   select(-host_id, -host_name, -room_type, -minimum_nights, -calculated_host_listings_count,
          -availability_365, -license)
+# Lincoln
 
 
+#--- means your code should stop here for each part (helps prevent merging conflicts)
+
+# Daniel
 
 
+#---
+
+# Ean
+class(listings_oct_to_june$last_review) # Already set to Date
+
+#---
+
+#___________________________________________________________________________________________________
 
 ## Clean
 
+# Lincoln
+listings_Lincoln_filtered <- listings_oct_to_june |>
+  drop_na(price) # drops missing price values
+
+#--- 
+
+# Daniel
 
 
+#---
 
+# Ean
+listings_Ean_filtered <- listings_oct_to_june |>
+  drop_na(last_review)
+
+#---
+
+#___________________________________________________________________________________________________
 
 ## Enrich
 
+# Ean
+dataset_date <- as.Date("2026-06-22") # June's data-set date
+listings_Ean_filtered <- listings_Ean_filtered |>
+  mutate(day_difference_review = as.numeric(dataset_date - last_review)) # Makes a new column of the difference of the days since the last review
+#---
 
-
-
+#___________________________________________________________________________________________________
 
 ## Publish
 
+# Lincoln
+ggplot(listings_Lincoln_filtered, 
+       aes(x = cut(price, breaks = c(0, 50, 100, 200,
+                                     500, 1000, Inf)))) + # Histogram Cutoffs
+  geom_bar() +
+  labs(title = "Price Distribution of Christchurch",
+       x = "Price ($NZD)",
+       y = "Number of Listings") + # Labels
+  theme_bw()
+#--- 
+
+# Daniel
 
 
+#---
+
+# Ean
+ggplot(listings_Ean_filtered, 
+       aes(x = cut(day_difference_review, breaks = c(0, 50, 100, 200,
+                                     500, 1000, Inf)))) + # Histogram Cutoffs
+  geom_bar() +
+  labs(title = "Day Difference on Last Review Distribution of Christchurch",
+       x = "Days",
+       y = "Number of Listings") + # Labels
+  theme_bw()
+
+#---
+
+#___________________________________________________________________________________________________
 
 
 

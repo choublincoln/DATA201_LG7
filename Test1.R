@@ -101,7 +101,7 @@ listings_oct_to_june <- listings_oct_to_june |>
 #---
 
 # Ean
-
+class(listings_oct_to_june$last_review) # Already set to Date
 
 #---
 
@@ -121,7 +121,8 @@ listings_Lincoln_filtered <- listings_oct_to_june |>
 #---
 
 # Ean
-
+listings_Ean_filtered <- listings_oct_to_june |>
+  drop_na(last_review)
 
 #---
 
@@ -130,8 +131,9 @@ listings_Lincoln_filtered <- listings_oct_to_june |>
 ## Enrich
 
 # Ean
-
-
+dataset_date <- as.Date("2026-06-22") # June's data-set date
+listings_Ean_filtered <- listings_Ean_filtered |>
+  mutate(day_difference_review = as.numeric(dataset_date - last_review)) # Makes a new column of the difference of the days since the last review
 #---
 
 #___________________________________________________________________________________________________
@@ -155,7 +157,14 @@ ggplot(listings_Lincoln_filtered,
 #---
 
 # Ean
-
+ggplot(listings_Ean_filtered, 
+       aes(x = cut(day_difference_review, breaks = c(0, 50, 100, 200,
+                                     500, 1000, Inf)))) + # Histogram Cutoffs
+  geom_bar() +
+  labs(title = "Day Difference on Last Review Distribution of Christchurch",
+       x = "Days",
+       y = "Number of Listings") + # Labels
+  theme_bw()
 
 #---
 

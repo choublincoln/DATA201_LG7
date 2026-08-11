@@ -97,7 +97,21 @@ listings_oct_to_june <- listings_oct_to_june |>
 
 # Daniel
 
+column_filter <- function(csvfile) { "Drops unecessary columns and returns data."
+  drop_file <- csvfile |>
+    select(-host_id, -host_name, -room_type, -minimum_nights, -calculated_host_listings_count,
+           -availability_365, -license)
+  drop_file
+}
 
+select_top <- function(data) { "Selects properties with highest numbers of reviews(10%)."
+  num_reviews <- data |> select(id, name, number_of_reviews)
+  num_rows <- nrow(data)
+  percent_rows <- num_rows*0.1
+  row_sort <- num_reviews[order(-num_reviews$number_of_reviews), ]
+  top_properties <- row_sort[1:percent_rows, ]
+  top_properties
+}
 #---
 
 # Ean
@@ -154,7 +168,14 @@ listings_oct_to_june <- listings_oct_to_june |>
 
 # Daniel
 
+write_top <- function(data){ "Writes a csv file with the properties with highest reviews"
+  filtered_data <- column_filter(data)
+  top_reviews <- select_top(filtered_data)
+  write.csv(top_reviews, "data/top_reviews.csv", row.names = FALSE)
+  
+}
 
+write_top(listings_oct_to_june)
 #---
 
 # Ean

@@ -1,6 +1,7 @@
-library(tidyverse)
 "what to do up here: Basically run all this code all the way down until line 46
  you only want to do this ONCE ONLY!!"
+
+library(tidyverse)
 # chosen data-set we're focused on 
 data_october <- read_csv("data/listings_october.csv") |> # |> is a pipe basically meaning "and then"
   filter(neighbourhood_group == "Christchurch City") |> # filters for Christchurch City.
@@ -58,8 +59,8 @@ write.csv(listings_oct_to_june, "data/listings_oct_to_june.csv", row.names = FAL
 
 
 ## Data Wrangling Pipeline from here down below write your code down here
-## Pull from your branch and then start working on your workflow with the template of the no code solution.
-
+## COPY AND PASTE EVERYTHING FROM THE MAIN BRANCH AND PASTE IT IN YOUR OWN BRANCH.
+## then start working on your workflow with the template of the no code solution.
 
 
 

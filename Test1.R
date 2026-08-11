@@ -1,4 +1,6 @@
 library(tidyverse)
+"what to do up here: Basically run all this code all the way down until line 46
+ you only want to do this ONCE ONLY!!"
 # chosen data-set we're focused on 
 data_october <- read_csv("data/listings_october.csv") |> # |> is a pipe basically meaning "and then"
   filter(neighbourhood_group == "Christchurch City") |> # filters for Christchurch City.
@@ -8,8 +10,6 @@ data_november <- read_csv("data/listings_november.csv") |>
   filter(neighbourhood_group == "Christchurch City") |>
   mutate(month = "November", year = 2025)
 
-
-#Ean's
 data_december <- read_csv("data/listings_december.csv") |>
   filter(neighbourhood_group == "Christchurch City") |>
   mutate(month = "December", year = 2025)
@@ -43,6 +43,8 @@ listings_oct_to_june <- bind_rows(data_october, data_november, data_december,
                               data_january, data_february, data_march,
                               data_april, data_may, data_june)
 
+# Run Only Once to download the concatenated data-set in your data file
+write.csv(listings_oct_to_june, "data/listings_oct_to_june.csv", row.names = FALSE)
 
 
 
@@ -54,11 +56,63 @@ listings_oct_to_june <- bind_rows(data_october, data_november, data_december,
 
 
 
-# Pallima stuff 
+
+## Data Wrangling Pipeline from here down below write your code down here
+## Pull from your branch and then start working on your workflow with the template of the no code solution.
+
+
+
+
+## Discover
+listings_oct_to_june <- read_csv("data/listings_oct_to_june.csv")
+
+
+
+# Pallima statistics will be here
 min(data1$price,na.rm=TRUE)
 max(data1$price,na.rm=TRUE)
 sd(data1$price,na.rm=TRUE)
 nrow(data1)
 data1|>
   count(host_name)
+
+
+
+
+## Structure
+"Column Filter that drops unecessary Columns"
+listings_oct_to_june <- listings_oct_to_june |>
+  select(-host_id, -host_name, -room_type, -minimum_nights, -calculated_host_listings_count,
+         -availability_365, -license)
+
+
+
+
+
+## Clean
+
+
+
+
+
+## Enrich
+
+
+
+
+
+## Publish
+
+
+
+
+
+
+
+
+
+
+
+
+
 

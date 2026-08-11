@@ -110,7 +110,8 @@ listings_oct_to_june <- listings_oct_to_june |>
 ## Clean
 
 # Lincoln
-
+listings_Lincoln_filtered <- listings_oct_to_june |>
+  drop_na(price) # drops missing price values
 
 #--- 
 
@@ -128,16 +129,6 @@ listings_oct_to_june <- listings_oct_to_june |>
 
 ## Enrich
 
-# Lincoln
-
-
-#--- 
-
-# Daniel
-
-
-#---
-
 # Ean
 
 
@@ -148,8 +139,27 @@ listings_oct_to_june <- listings_oct_to_june |>
 ## Publish
 
 # Lincoln
+ggplot(listings_Lincoln_filtered, 
+       aes(x = cut(price, breaks = c(0, 50, 100, 200,
+                                     500, 1000, Inf)))) + # Histogram Cutoffs
+  geom_bar() +
+  labs(title = "Price Distribution of Christchurch",
+       x = "Price ($NZD)",
+       y = "Number of Listings") + # Labels
+  theme_bw()
 
 
+
+ggplot(listings_Lincoln_filtered, aes(x = price)) +
+  geom_histogram(
+    breaks = c(0, 50, 100, 200, 500, 1000, Inf)
+  ) +
+  labs(
+    title = "Price Distribution",
+    x = "Price ($)",
+    y = "Number of Listings"
+  ) +
+  theme_bw()
 #--- 
 
 # Daniel

@@ -68,11 +68,6 @@ write.csv(listings_oct_to_june, "data/listings_oct_to_june.csv", row.names = FAL
 ## Discover
 listings_oct_to_june <- read_csv("data/listings_oct_to_june.csv") # MUST RUN
 
-# Lincoln
-
-
-#--- means your code should stop here for each part (helps prevent merging conflicts)
-
 
 # Pallima statistics will be here
 min(data1$price,na.rm=TRUE)
@@ -81,7 +76,7 @@ sd(data1$price,na.rm=TRUE)
 nrow(data1)
 data1|>
   count(host_name)
-#---
+#--- means your code should stop here for each part (helps prevent merging conflicts)
 
 #___________________________________________________________________________________________________
 
@@ -90,10 +85,6 @@ data1|>
 listings_oct_to_june <- listings_oct_to_june |>
   select(-host_id, -host_name, -room_type, -minimum_nights, -calculated_host_listings_count,
          -availability_365, -license) # MUST RUN
-# Lincoln
-
-
-#--- means your code should stop here for each part (helps prevent merging conflicts)
 
 # Daniel
 
@@ -147,7 +138,7 @@ listings_Ean_filtered <- listings_oct_to_june |>
 # Ean
 dataset_date <- as.Date("2026-06-22") # June's data-set date
 listings_Ean_filtered <- listings_Ean_filtered |>
-  mutate(day_difference_review = as.numeric(dataset_date - last_review)) # Makes a new column of the difference of the days since the last review
+  mutate(day_difference_review = as.numeric(dataset_date - last_review)) # Makes a new column on the difference of the days since the last review
 #---
 
 #___________________________________________________________________________________________________
@@ -156,8 +147,10 @@ listings_Ean_filtered <- listings_Ean_filtered |>
 
 # Lincoln
 ggplot(listings_Lincoln_filtered, 
-       aes(x = cut(price, breaks = c(0, 50, 100, 200,
-                                     500, 1000, Inf)))) + # Histogram Cutoffs
+       aes(x = cut(price, 
+                   breaks = c(0, 50, 100, 200, 500, 1000, Inf), # Histogram Cutoffs
+                   labels = c("0–50", "51–100", "101–200", 
+                              "201–500", "501–1000", "1000+")))) + 
   geom_bar() +
   labs(title = "Price Distribution of Christchurch",
        x = "Price ($NZD)",
@@ -179,14 +172,17 @@ write_top(listings_oct_to_june)
 
 # Ean
 ggplot(listings_Ean_filtered, 
-       aes(x = cut(day_difference_review, breaks = c(0, 50, 100, 200,
-                                     500, 1000, Inf)))) + # Histogram Cutoffs
+       aes(x = cut(day_difference_review, 
+                   breaks = c(0, 50, 100, 200, 500, 1000, Inf), # Histogram Cutoffs
+                   labels = c("0–50", "51–100", "101–200", 
+                              "201–500", "501–1000", "1000+")))) +
   geom_bar() +
-  labs(title = "Day Difference on Last Review Distribution of Christchurch",
-       x = "Days",
-       y = "Number of Listings") + # Labels
+  labs(
+    title = "Day Difference on Last Review Distribution of Christchurch",
+    x = "Days Since Last Review",
+    y = "Number of Listings"
+  ) +
   theme_bw()
-
 #---
 
 #___________________________________________________________________________________________________

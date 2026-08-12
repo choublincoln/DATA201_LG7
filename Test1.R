@@ -164,11 +164,10 @@ write_top <- function(data){ "Writes a csv file with the properties with highest
   filtered_data <- column_filter(data)
   top_reviews <- select_top(filtered_data)
   write.csv(top_reviews, "data/top_reviews.csv", row.names = FALSE)
-  
+  top_reviews
 }
 
 write_top(listings_oct_to_june)
-top_reviews <- read_csv("data/top_reviews.csv")
 #---
 
 # Ean

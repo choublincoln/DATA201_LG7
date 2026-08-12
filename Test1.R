@@ -149,8 +149,8 @@ listings_Ean_filtered <- listings_Ean_filtered |>
 ggplot(listings_Lincoln_filtered, 
        aes(x = cut(price, 
                    breaks = c(0, 50, 100, 200, 500, 1000, Inf), # Histogram Cutoffs
-                   labels = c("0–50", "51–100", "101–200", 
-                              "201–500", "501–1000", "1000+")))) + 
+                   labels = c("$0–$50", "$51–$100", "$101–$200", 
+                              "$201–$500", "$501–$1000", "$1000+")))) + 
   geom_bar() +
   labs(title = "Price Distribution of Christchurch",
        x = "Price ($NZD)",

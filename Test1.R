@@ -167,7 +167,7 @@ write_top <- function(data){ "Writes a csv file with the properties with highest
   top_reviews
 }
 
-write_top(listings_oct_to_june)
+write_top(data_june)
 #---
 
 # Ean

@@ -19,54 +19,73 @@ Airbnb_listings_cleaned <- listings_oct_to_june |>
   select(id, neighbourhood, latitude, longitude, room_type, price, availability_365,
          month, year) # column drops
 
-write.csv(Airbnb_listings_cleaned, "data3/Airbnb_listings_cleaned.csv", row.names = FALSE)
+write.csv(Airbnb_listings_cleaned, "data2/Airbnb_listings_cleaned.csv", row.names = FALSE)
 #___________________________________________________________________________________________________
-"Bonds Cleaning"
-
-
-drop_column <- function(csvfile, col_name) {"Drops unnecessary columns."
-  drop_file <- csvfile |>
-    select(-all_of(col_name))
-  drop_file
-  }
-
-
-drop_row <- function(csvfile, col_name) {"Drops problematic rows. Not sure if this is necessary."
-  new_data |>
-    filter(!is.na(.csvfile[[col_name]]))
-  new_data
-  }
-
-
-na_rent <- function(csvfile) {"Drops listings that probably have not been rented."
-  
-  }
-#___________________________________________________________________________________________________
-
-
-
-
-#___________________________________________________________________________________________________
-
-
-
-#___________________________________________________________________________________________________
-
-
-
-#___________________________________________________________________________________________________
-
 "Filtering Timeframe"
 
 # Filter to match Christchurch listings:
 # October 2025 to June 2026
+
+bonds$TimeFrame <- as.Date(bonds$TimeFrame, format = "%d/%m/%Y")
+
 bonds_filtered <- bonds %>%
   filter(
     TimeFrame >= as.Date("2025-10-01"),
     TimeFrame <= as.Date("2026-06-30")
   )
 
+# The above code was broken. I fixed it (Daniel)
+
 sort(unique(bonds_filtered$TimeFrame))
+
+write.csv(bonds_filtered, "data2/filtered.csv", row.names = FALSE)
+#___________________________________________________________________________________________________
+
+"Bonds Cleaning"
+null_per <- mean(bonds$`Location Id` == "NULL") * 100 # Calculates the percentage of Missing Location Id's in the Bonds data set
+aggregate_per <- mean(bonds$`Location Id` == "-99") * 100 # Calculates the percentage of Location Id's = -99
+
+drop_column <- function(data, col_name) {#Drops unnecessary columns.
+  drop_file <- data |>
+    select(-all_of(col_name))
+  drop_file
+  }
+
+
+drop_row <- function(data, col_name, value) {#Drops problematic rows.
+  data %>%
+    filter(
+      !is.na(.data[[col_name]]),
+      .data[[col_name]] != value
+    )
+  }
+
+
+tenancy_data <- function(data) {#Cleans tenancy report data
+  weekly_dropped <- drop_column(data, "Log Std Dev Weekly Rent")
+  all_col_dropped <- drop_column(weekly_dropped, "Closed Bonds")
+  na_row_drop <- drop_row(all_col_dropped, "Location Id", "NULL")
+  all_row_drop <- drop_row(na_row_drop, "Location Id", "-99")
+  write.csv(all_row_drop, "data2/tenancy_cleaned.csv", row.names = FALSE)
+  print("New csv file created.")
+  all_row_drop
+  }
+
+tenancy_data(bonds_filtered)
+
+cat("Percentage of null values in Location ID:", null_per, "%\n")
+cat("Percentage of -99 values in Location ID:", aggregate_per, "%\n")
+#___________________________________________________________________________________________________
+
+
+
+#___________________________________________________________________________________________________
+
+
+
+#___________________________________________________________________________________________________
+
+
 
 
 

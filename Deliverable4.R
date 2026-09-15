@@ -10,13 +10,13 @@ bonds <- read_csv("data2/bonds.csv")
 Airbnb_listings_cleaned <- listings_oct_to_june |>
   mutate(id = as.character(id)) |> # converting id to character
   select(id, neighbourhood, latitude, longitude, room_type, price, availability_365,
-         month, year) # column drops
+         month, year) # Selecting only these columns for the analyses, drops others
 
 write.csv(Airbnb_listings_cleaned, "data3/Airbnb_listings_cleaned.csv", row.names = FALSE)
 #___________________________________________________________________________________________________
 "Bonds Cleaning"
-
-
+mean(bonds$`Location Id` == "NULL") * 100 # Calculates the percentage of Missing Location Id's in the Bonds data set
+mean(bonds$`Location Id` == "-99") * 100 # Calculates the percentage of Location Id's = -99
 
 
 

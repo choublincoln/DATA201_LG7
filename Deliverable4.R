@@ -21,4 +21,22 @@ write.csv(Airbnb_listings_cleaned, "data3/Airbnb_listings_cleaned.csv", row.name
 
 
 #___________________________________________________________________________________________________
+"Filtering Timeframe"
+
+# Filter to match Christchurch listings:
+# October 2025 to June 2026
+bonds_filtered <- bonds %>%
+  filter(
+    TimeFrame >= as.Date("2025-10-01"),
+    TimeFrame <= as.Date("2026-06-30")
+  )
+
+sort(unique(bonds_filtered$TimeFrame))
+
+
+
+
+
+
+
 

@@ -66,23 +66,26 @@ drop_row <- function(data, col_name, value) {#Drops problematic rows.
   }
 
 
-tenancy_data <- function(data) {#Cleans tenancy report data
+tenancy_data <- function(data) { # Cleans tenancy report data
   weekly_dropped <- drop_column(data, "Log Std Dev Weekly Rent")
   all_col_dropped <- drop_column(weekly_dropped, "Closed Bonds")
+  
   na_row_drop <- drop_row(all_col_dropped, "Location Id", "NULL")
   all_row_drop <- drop_row(na_row_drop, "Location Id", "-99")
+  
+  all_row_drop <- all_row_drop |>
+    mutate(
+      `Median Rent` = as.integer(`Median Rent`),
+      `Geometric Mean Rent` = as.integer(`Geometric Mean Rent`),
+      `Upper Quartile Rent` = as.integer(`Upper Quartile Rent`),
+      `Lower Quartile Rent` = as.integer(`Lower Quartile Rent`)
+    )
+  
   write.csv(all_row_drop, "data3/tenancy_cleaned.csv", row.names = FALSE)
   print("New csv file created.")
-  all_row_drop |>
-    mutate("Median Rent" = as.integer("Median Rent"))
-  all_row_drop |>
-    mutate("Geometric Mean Rent" = as.integer("Geometric Mean Rent"))
-  all_row_drop |>
-    mutate("Upper Quartile Rent" = as.integer("Upper Quartile Rent"))
-  all_row_drop |>
-    mutate("Lower Quartile Rent" = as.integer("Lower Quartile Rent"))
+  
   all_row_drop
-  }
+}
 
 tenancy_data(bonds_filtered)
 

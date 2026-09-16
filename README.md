@@ -182,7 +182,7 @@ A missing price does not necessarily indicate that a property has no future avai
 | `longitude` | **Keep** | Potentially useful for geographic analysis/joining |
 | `room_type` | **Keep** | Could explain differences in rental prices |
 | `price` | **Keep** | Main variable we are comparing |
-| `minimum_nights` | **Delete** | Not relevant to the analysis |
+| `minimum_nights` | **Keep** | relevant to future analysis |
 | `number_of_reviews` | **Delete** | Not relevant to the analysis |
 | `last_review` | **Delete** | Not relevant to the analysis |
 | `reviews_per_month` | **Delete** | Not relevant to the analysis |

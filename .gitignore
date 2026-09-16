@@ -50,9 +50,3 @@ rsconnect/
 
 # For the listings dataset
 Data/
-
-# For the bond dataset
-Data2/
-
-# For the Combined output dataset
-Data3/

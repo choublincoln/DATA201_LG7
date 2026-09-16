@@ -266,4 +266,4 @@ All the data types were previously: **character**
 
 ## Bonds Dataset Summary
 
-In summary: **2 variables/columns have been removed resulting in 10 variables/columns in the cleaned Airbnb Listings Dataset.**
+In summary: ** no variables/columns have been removed

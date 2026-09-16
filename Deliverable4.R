@@ -20,11 +20,6 @@ Airbnb_listings_cleaned <- listings_oct_to_june |>
          month, year) # Selecting only these columns for the analyses, drops others
 
 write.csv(Airbnb_listings_cleaned, "data3/Airbnb_listings_cleaned.csv", row.names = FALSE)
-#___________________________________________________________________________________________________
-"Bonds Cleaning"
-mean(bonds$`Location Id` == "NULL") * 100 # Calculates the percentage of Missing Location Id's in the Bonds data set
-mean(bonds$`Location Id` == "-99") * 100 # Calculates the percentage of Location Id's = -99
-
 
 
 #___________________________________________________________________________________________________
@@ -49,8 +44,13 @@ write.csv(bonds_filtered, "data2/filtered.csv", row.names = FALSE)
 #___________________________________________________________________________________________________
 
 "Bonds Cleaning"
-null_per <- mean(bonds$`Location Id` == "NULL") * 100 # Calculates the percentage of Missing Location Id's in the Bonds data set
-aggregate_per <- mean(bonds$`Location Id` == "-99") * 100 # Calculates the percentage of Location Id's = -99
+null_per <- mean(bonds_filtered$`Location Id` == "NULL") * 100 # Calculates the percentage of Missing Location Id's in the Bonds data set
+aggregate_per <- mean(bonds_filtered$`Location Id` == "-99") * 100 # Calculates the percentage of Location Id's = -99
+
+count_na <- bonds_filtered |> 
+  count(`Location Id` == "NULL")
+count_agg <- bonds_filtered |> 
+  count(`Location Id` == "-99")
 
 drop_column <- function(data, col_name) {#Drops unnecessary columns.
   drop_file <- data |>
@@ -75,6 +75,16 @@ tenancy_data <- function(data) {#Cleans tenancy report data
   all_row_drop <- drop_row(na_row_drop, "Location Id", "-99")
   write.csv(all_row_drop, "data2/tenancy_cleaned.csv", row.names = FALSE)
   print("New csv file created.")
+  all_row_drop |>
+    mutate("Number Of Beds" = as.integer("Number Of Beds"))
+  all_row_drop |>
+    mutate("Median Rent" = as.integer("Median Rent"))
+  all_row_drop |>
+    mutate("Geometric Mean Rent" = as.integer("Geometric Mean Rent"))
+  all_row_drop |>
+    mutate("Upper Quartile Rent" = as.integer("Upper Quartile Rent"))
+  all_row_drop |>
+    mutate("Lower Quartile Rent" = as.integer("Lower Quartile Rent"))
   all_row_drop
   }
 
@@ -82,14 +92,6 @@ tenancy_data(bonds_filtered)
 
 cat("Percentage of null values in Location ID:", null_per, "%\n")
 cat("Percentage of -99 values in Location ID:", aggregate_per, "%\n")
-#___________________________________________________________________________________________________
-
-
-
-#___________________________________________________________________________________________________
-
-
-
 #___________________________________________________________________________________________________
 
 

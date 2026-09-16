@@ -209,7 +209,7 @@ In summary: **11 variables/columns have been removed resulting in 9 variables/co
 
 The Location Id is needed to identify the corresponding geographic location. Without an ID, the observation cannot be reliably matched to a location, making it unsuitable for a location-specific analysis. Through statistics calculations, only 0.35% of observations had a missing Location Id, so removing these observations is expected to have minimal impact on the overall dataset.
 
-### Number of Rows Affected:
+### Number of Rows Affected: 794 were removed
 
 ---
 
@@ -223,7 +223,7 @@ The value -99 does not correspond to a geographic location in the official Locat
 
 [Stats NZ Datafinder — Statistical Area 2 2019 Generalised](https://datafinder.stats.govt.nz/layer/98970-statistical-area-2-2019-generalised/)
 
-### Number of Rows Affected:
+### Number of Rows Affected: 1091 were removed
 
 ---
 

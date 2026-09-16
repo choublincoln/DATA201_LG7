@@ -39,8 +39,6 @@ bonds_filtered <- bonds %>%
 # The above code was broken. I fixed it (Daniel)
 
 sort(unique(bonds_filtered$TimeFrame))
-
-write.csv(bonds_filtered, "data2/filtered.csv", row.names = FALSE)
 #___________________________________________________________________________________________________
 
 "Bonds Cleaning"
@@ -73,7 +71,7 @@ tenancy_data <- function(data) {#Cleans tenancy report data
   all_col_dropped <- drop_column(weekly_dropped, "Closed Bonds")
   na_row_drop <- drop_row(all_col_dropped, "Location Id", "NULL")
   all_row_drop <- drop_row(na_row_drop, "Location Id", "-99")
-  write.csv(all_row_drop, "data2/tenancy_cleaned.csv", row.names = FALSE)
+  write.csv(all_row_drop, "data3/tenancy_cleaned.csv", row.names = FALSE)
   print("New csv file created.")
   all_row_drop |>
     mutate("Median Rent" = as.integer("Median Rent"))

@@ -76,8 +76,6 @@ tenancy_data <- function(data) {#Cleans tenancy report data
   write.csv(all_row_drop, "data2/tenancy_cleaned.csv", row.names = FALSE)
   print("New csv file created.")
   all_row_drop |>
-    mutate("Number Of Beds" = as.integer("Number Of Beds"))
-  all_row_drop |>
     mutate("Median Rent" = as.integer("Median Rent"))
   all_row_drop |>
     mutate("Geometric Mean Rent" = as.integer("Geometric Mean Rent"))

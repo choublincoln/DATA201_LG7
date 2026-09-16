@@ -67,10 +67,8 @@ drop_row <- function(data, col_name, value) {#Drops problematic rows.
 
 
 tenancy_data <- function(data) { # Cleans tenancy report data
-  weekly_dropped <- drop_column(data, "Log Std Dev Weekly Rent")
-  all_col_dropped <- drop_column(weekly_dropped, "Closed Bonds")
-  
-  na_row_drop <- drop_row(all_col_dropped, "Location Id", "NULL")
+
+  na_row_drop <- drop_row(data, "Location Id", "NULL")
   all_row_drop <- drop_row(na_row_drop, "Location Id", "-99")
   
   all_row_drop <- all_row_drop |>

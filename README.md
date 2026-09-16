@@ -257,12 +257,12 @@ All the data types were previously: **character**
 | `Number Of Beds` | **Keep** | Useful for comparing properties of similar size and analysing rental-price differences. |
 | `Total Bonds` | **Keep** | Provides information about the total number of rental bonds and can help describe the rental market. |
 | `Active Bonds` | **Keep** | Important for measuring the number of currently active rental properties. |
-| `Closed Bonds` | **Delete** | Not directly relevant to comparing current rental prices and property availability. |
+| `Closed Bonds` | **Keep** | Not directly relevant to comparing current rental prices and property availability but may provide useful information |
 | `Median Rent` | **Keep** | Important measure of conventional rental prices to compare with Airbnb prices. |
 | `Geometric Mean Rent` | **Keep** | Provides another measure of typical rental prices and may be useful when comparing rental-price trends. |
 | `Upper Quartile Rent` | **Keep** | Useful for understanding the distribution of rental prices and comparing higher-priced rentals. |
 | `Lower Quartile Rent` | **Keep** | Useful for understanding the distribution of rental prices and comparing lower-priced rentals. |
-| `Log Std Dev Weekly Rent` | **Delete** | Measures variability in weekly rent, which isn't directly needed for the planned comparison of rental prices and property availability. |
+| `Log Std Dev Weekly Rent` | **Keep** | Measures variability in weekly rent, but may provide useful information |
 
 ## Bonds Dataset Summary
 

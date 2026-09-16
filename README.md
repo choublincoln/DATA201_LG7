@@ -239,12 +239,6 @@ The Airbnb dataset covers **October 2025 to June 2026**, so the bonds data shoul
 
 # Mini Data Conversions for Easier Future Analysis
 
-## Number Of Beds
-
-**Column data type → Number**
-
-The data type was previously: **character**
-
 ## All Rent Columns
 
 **Column data types → Number**

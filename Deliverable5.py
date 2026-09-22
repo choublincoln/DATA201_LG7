@@ -3,8 +3,6 @@ import pandas as pd
 airbnb_data = pd.read_csv("data3/Airbnb_listings_cleaned.csv")
 airbnb_data['sa2_code'] = None
 
-
-#__________________________________________________________________________________________________________________________________________________________
 "Daniel's code"
 import pandas as pd
 import requests
@@ -15,10 +13,7 @@ import time
 # # 1. LOAD AIRBNB DATA
 # # =========================================================
 
-# airbnb_data = pd.read_csv("data3/Airbnb_listings_cleaned.csv")
-
-# # Create SA2 column
-# airbnb_data["sa2_code"] = None
+# airbnb_data = pd.read_csv("data3/Airbnb_listings_cleaned.csv", dtype={"id": "string"})
 
 # # =========================================================
 # # 2. API DETAILS
@@ -108,6 +103,40 @@ import time
 # # =========================================================
 
 # if __name__ == "__main__":
+#     test_rows = [
+#         (i, airbnb_data.loc[i, "latitude"], airbnb_data.loc[i, "longitude"])
+#         for i in airbnb_data.index[:15]
+#     ]
+
+#     print("===================================")
+#     print("STARTING 15-ROW TEST")
+#     print("===================================")
+
+#     with multiprocessing.Pool(processes=40) as pool:
+#         test_results = pool.map(get_sa2, test_rows)
+
+#     # Add SA2 results to the 15 rows
+#     test_data = airbnb_data.iloc[:15].copy()
+
+#     for index, sa2_code in test_results:
+#         test_data.loc[index, "sa2_code"] = sa2_code
+
+#     # Save test file
+#     test_file = "data3/Airbnb_listings_sa2_TEST.csv"
+#     test_data.to_csv(test_file, index=False)
+
+#     print("\nTEST RESULTS")
+#     print("===================================")
+#     print(test_data[["id", "latitude", "longitude", "sa2_code"]])
+
+#     print("\nTest file saved to:")
+#     print(test_file)
+
+#     print("===================================")
+#     print("15-ROW TEST COMPLETE")
+#     print("===================================")
+
+
 #     rows = [(i, airbnb_data.loc[i, "latitude"], airbnb_data.loc[i, "longitude"])
 #         for i in airbnb_data.index]
 
@@ -215,7 +244,7 @@ import time
 # 1. LOAD DATASETS
 # =========================================================
 
-airbnb = pd.read_csv("data3/Airbnb_listings_sa2.csv")
+airbnb = pd.read_csv("data3/Airbnb_listings_sa2.csv", dtype={"id": "string"})
 bond = pd.read_csv("data3/tenancy_cleaned.csv")
 
 # =========================================================

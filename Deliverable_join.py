@@ -25,18 +25,22 @@ bond = bond.rename(columns={"Location Id": "sa2_code"})
 # # 3. CREATE AIRBNB TIME COLUMN
 # # =========================================================
 
-month_numbers = {"January": 1,"February": 2,"March": 3,"April": 4,"May": 5,"June": 6,
-                "July": 7, "August": 8, "September": 9, "October": 10, "November": 11, "December": 12}
 
-airbnb["month_number"] = (airbnb["month"].map(month_numbers))
-airbnb["time"] = (airbnb["year"].astype(str)+ "-" + airbnb["month_number"].astype("Int64").astype(str).str.zfill(2))
+quarterly = {"January": 1,"February": 1,"March": 1,"April": 2,"May": 2,"June": 2,
+                "July": 3, "August": 3, "September": 3, "October": 4, "November": 4, "December": 4}
+
+airbnb["quarter"] = (airbnb["month"].map(quarterly))
 
 # # =========================================================
 # # 4. CREATE BOND TIME COLUMN
 # # =========================================================
 
-bond["TimeFrame"] = pd.to_datetime(bond["TimeFrame"], errors="coerce")
-bond["time"] = (bond["TimeFrame"].dt.strftime("%Y-%m").astype("string"))
+bond_quarterly = {"2025-10-01": 4, "2026-01-01": 1,"2026-04-01": 2}
+bond["TimeFrame"] = bond["TimeFrame"].astype("string")
+bond["quarter"] = (bond["TimeFrame"].map(bond_quarterly))
+
+print(bond["TimeFrame"].head())
+print(bond["quarter"].head())
 
 # # =========================================================
 # # 5. FILTER BOND DATA
@@ -52,20 +56,20 @@ bond_all = bond[(bond["Dwelling Type"] == "ALL") & (bond["Number Of Beds"] == "A
 # # 6. CHECK FOR DUPLICATES
 # # =========================================================
 
-duplicates = bond_all.duplicated(subset=["sa2_code", "time"]).sum()
+duplicates = bond_all.duplicated(subset=["sa2_code", "quarter"]).sum()
 
 print("===================================")
 print("BOND DATA CHECK")
 print("===================================")
 
 print(f"Bond rows after filtering: "f"{len(bond_all):,}")
-print(f"Duplicate SA2 + time combinations: "f"{duplicates:,}")
+print(f"Duplicate SA2 + quarter combinations: "f"{duplicates:,}")
 
 # # =========================================================
 # # 7. JOIN AIRBNB AND BOND DATA
 # # =========================================================
 
-joined = pd.merge(airbnb, bond_all, on=["sa2_code", "time"], how="left")
+joined = pd.merge(airbnb, bond_all, on=["sa2_code", "quarter"], how="left")
 
 # # =========================================================
 # # 8. CHECK JOIN RESULTS
@@ -101,8 +105,12 @@ print(joined.head())
 # # 10. SAVE FINAL DATASET
 # # =========================================================
 
+# final_data = joined.drop(columns="quarter")
+
 output_file = ("data3/Airbnb_bond_joined_final.csv")
 joined.to_csv(output_file, index=False)
+
+bond.to_csv("data3/tenancy_cleaned_test.csv", index=False)
 
 # # =========================================================
 # # 11. DONE

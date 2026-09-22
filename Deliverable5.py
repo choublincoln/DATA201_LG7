@@ -6,6 +6,8 @@ airbnb_data['sa2_code'] = None
 import requests
 import multiprocessing
 import time
+import os
+from dotenv import load_dotenv
 
 # =========================================================
 # 1. LOAD AIRBNB DATA
@@ -17,7 +19,8 @@ airbnb_data = pd.read_csv("data3/Airbnb_listings_cleaned.csv", dtype={"id": "str
 # 2. API DETAILS
 # =========================================================
 
-API_KEY = "6bc49b9afc514295a2478b656738aaf8"
+load_dotenv()
+API_KEY = os.getenv("DATAFINDER_API_KEY")
 LAYER = 123515
 
 API_URL = ("https://datafinder.stats.govt.nz/services/query/v1/vector.json")

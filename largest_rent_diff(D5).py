@@ -28,7 +28,7 @@ for index, row in joined_sa3.iterrows():
 print("Number of rows in joined_sa3 with price differences:", len(joined_sa3[joined_sa3['price difference'].notnull()]))
 
 list_sa3 = joined_sa3['SA32023_code'].unique().tolist()
-
+list_sa3.sort()
 joined_nan_drop = joined_sa3.dropna(subset=['price difference'])
 
 max_diff = 0

@@ -18,6 +18,6 @@ central_summary = central[
 
 central_summary.head(10)
 central_summary.to_csv(
-    "Christchurch_Central_Airbnb_prices.csv",
+    "data3/Christchurch_Central_Airbnb_prices.csv",
     index=False
 )

@@ -2,7 +2,10 @@
 "The output data we get will go into the Data3 Folder that you should have created"
 
 library(tidyverse)
-listings_oct_to_june <- read_csv("Deliverable4/input_data/listings_oct_to_june.csv") # MUST RUN
+
+listings_oct_to_june <- read_csv("Deliverable4/input_data/listings_oct_to_june.csv",
+                                 col_types = cols(id = col_character())) # MUST RUN
+
 
 #___________________________________________________________________________________________________
 

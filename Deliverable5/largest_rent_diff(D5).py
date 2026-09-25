@@ -1,8 +1,8 @@
 import pandas as pd
-joined_data = pd.read_csv("data3/Airbnb_bond_joined_final.csv")
+joined_data = pd.read_csv("Deliverable5/input_data/Airbnb_bond_joined_final.csv")
 joined_data['price difference'] = None
 
-mapping = pd.read_csv("data/geographic-areas-table-2023.csv")
+mapping = pd.read_csv("Deliverable5/input_data/geographic-areas-table-2023.csv")
 
 mapping_unique = mapping[
     ["SA22023_code", "SA32023_code"]
@@ -45,5 +45,5 @@ for sa3_code in list_sa3:
 
 print(f"SA3 Code with the largest price difference: {big_dif_sa3}, Max Price Difference: {max_diff}")
 
-output_file = ("data3/listings_sa3.csv")
+output_file = ("Deliverable5/output_data/listings_sa3.csv")
 joined_nan_drop.to_csv(output_file,index=False)

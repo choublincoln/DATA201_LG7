@@ -6,8 +6,8 @@ import pandas as pd
 # # 1. LOAD DATASETS
 # # =========================================================
 
-airbnb = pd.read_csv("data3/Airbnb_listings_sa2.csv", dtype={"id": "string"})
-bond = pd.read_csv("data3/tenancy_cleaned.csv")
+airbnb = pd.read_csv("Deliverable5/input_data/Airbnb_listings_sa2.csv", dtype={"id": "string"})
+bond = pd.read_csv("Deliverable5/input_data/tenancy_cleaned.csv")
 
 # # =========================================================
 # # 2. PREPARE AREA CODES
@@ -107,10 +107,10 @@ print(joined.head())
 
 # final_data = joined.drop(columns="quarter")
 
-output_file = ("data3/Airbnb_bond_joined_final.csv")
+output_file = ("Deliverable5/output_data/Airbnb_bond_joined_final.csv")
 joined.to_csv(output_file, index=False)
 
-bond.to_csv("data3/tenancy_cleaned_test.csv", index=False)
+bond.to_csv("Deliverable5/input_data/tenancy_cleaned_test.csv", index=False)
 
 # # =========================================================
 # # 11. DONE

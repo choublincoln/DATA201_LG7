@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("data3/Airbnb_bond_joined_final.csv")
+df = pd.read_csv("Deliverable5/input_data/Airbnb_bond_joined_final.csv")
 print(df.columns)
 central = df[df["sa2_code"] == 326600]
 
@@ -18,6 +18,6 @@ central_summary = central[
 
 central_summary.head(10)
 central_summary.to_csv(
-    "data3/Christchurch_Central_Airbnb_prices.csv",
+    "Deliverable5/output_data/Christchurch_Central_Airbnb_prices.csv",
     index=False
 )

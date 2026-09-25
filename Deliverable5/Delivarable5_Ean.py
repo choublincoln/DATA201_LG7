@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # Load the joined dataset
 joined = pd.read_csv(
-    "data3/Airbnb_bond_joined_final.csv",
+    "Deliverable5/input_data/Airbnb_bond_joined_final.csv",
     dtype={"id": "string", "sa2_code": "string"}
 )
 

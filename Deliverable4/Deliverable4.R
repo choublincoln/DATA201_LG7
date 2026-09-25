@@ -2,7 +2,7 @@
 "The output data we get will go into the Data3 Folder that you should have created"
 
 library(tidyverse)
-listings_oct_to_june <- read_csv("data/listings_oct_to_june.csv") # MUST RUN
+listings_oct_to_june <- read_csv("Deliverable4/input_data/listings_oct_to_june.csv") # MUST RUN
 
 #___________________________________________________________________________________________________
 
@@ -10,7 +10,7 @@ listings_oct_to_june <- read_csv("data/listings_oct_to_june.csv") # MUST RUN
 
 #___________________________________________________________________________________________________
 
-bonds <- read_csv("data2/bonds.csv")
+bonds <- read_csv("Deliverable4/input_data/bonds.csv")
 
 #___________________________________________________________________________________________________
 "Airbnb Cleaning"
@@ -19,7 +19,7 @@ Airbnb_listings_cleaned <- listings_oct_to_june |>
   select(id, neighbourhood, latitude, longitude, room_type, price, availability_365,
          month, year, minimum_nights) # Selecting only these columns for the analyses, drops others
 
-write.csv(Airbnb_listings_cleaned, "data3/Airbnb_listings_cleaned.csv", row.names = FALSE)
+write.csv(Airbnb_listings_cleaned, "Deliverable4/output_data/Airbnb_listings_cleaned.csv", row.names = FALSE)
 
 
 #___________________________________________________________________________________________________
@@ -79,7 +79,7 @@ tenancy_data <- function(data) { # Cleans tenancy report data
       `Lower Quartile Rent` = as.integer(`Lower Quartile Rent`)
     )
   
-  write.csv(all_row_drop, "data3/tenancy_cleaned.csv", row.names = FALSE)
+  write.csv(all_row_drop, "Deliverable4/output_data/tenancy_cleaned.csv", row.names = FALSE)
   print("New csv file created.")
   
   all_row_drop

@@ -266,4 +266,29 @@ All the data types were previously: **character**
 
 ## Bonds Dataset Summary
 
-In summary: **2 variables/columns have been removed resulting in 10 variables/columns in the cleaned Airbnb Listings Dataset.**
+In summary: ** no variables/columns have been removed
+
+
+
+
+
+
+
+
+
+
+# Joining the Bonds Dataset and Airbnb
+The Airbnb dataset was given SA2 area codes using the latitude and longitude of each listing. The bond dataset was then filtered to include only records where both Dwelling Type and Number of Beds were “ALL”, giving overall rental statistics rather than separate statistics for different property or bedroom types. This prevented multiple bond records from matching the same Airbnb observation. The datasets were then joined using SA2 code and time, with a left join so that all Airbnb observations were retained.
+
+
+
+
+
+
+
+
+
+
+
+
+

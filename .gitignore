@@ -48,12 +48,30 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
-# For the listings dataset
-Data/
+# excluding deliverable2 data files 
+Deliverable2/input_data
+Deliverable2/output_data
 
+# excluding deliverable3 data files 
+Deliverable3/input_data
+Deliverable3/output_data
 
-# For the bond dataset
+# excluding deliverable4 data files 
+Deliverable4/input_data
+Deliverable4/output_data
+
+# excluding deliverable5 data files
+Deliverable5/input_data
+Deliverable5/output_data
+
+# For API keys and other sensitive information
+Deliverable5/.env
+
+# placeholder
 Data2/
 
-# For the Combined output dataset
+# placeholder
 Data3/
+
+# placeholder
+data/

@@ -3,39 +3,39 @@
 
 library(tidyverse)
 # chosen data-set we're focused on 
-data_october <- read_csv("data/listings_october.csv") |> # |> is a pipe basically meaning "and then"
+data_october <- read_csv("Deliverable3/input_data/listings_october.csv") |> # |> is a pipe basically meaning "and then"
   filter(neighbourhood_group == "Christchurch City") |> # filters for Christchurch City.
   mutate(month = "October", year = 2025) # creates new columns with their assigned values.
 
-data_november <- read_csv("data/listings_november.csv") |>
+data_november <- read_csv("Deliverable3/input_data/listings_november.csv") |>
   filter(neighbourhood_group == "Christchurch City") |>
   mutate(month = "November", year = 2025)
 
-data_december <- read_csv("data/listings_december.csv") |>
+data_december <- read_csv("Deliverable3/input_data/listings_december.csv") |>
   filter(neighbourhood_group == "Christchurch City") |>
   mutate(month = "December", year = 2025)
 
-data_january <- read_csv("data/listings_january.csv") |>
+data_january <- read_csv("Deliverable3/input_data/listings_january.csv") |>
   filter(neighbourhood_group == "Christchurch City") |>
   mutate(month = "January", year = 2026)
 
-data_february <- read_csv("data/listings_february.csv") |>
+data_february <- read_csv("Deliverable3/input_data/listings_february.csv") |>
   filter(neighbourhood_group == "Christchurch City") |>
   mutate(month = "February", year = 2026)
 
-data_march <- read_csv("data/listings_march.csv") |>
+data_march <- read_csv("Deliverable3/input_data/listings_march.csv") |>
   filter(neighbourhood_group == "Christchurch City") |>
   mutate(month = "March", year = 2026)
 
-data_april <- read_csv("data/listings_april.csv") |>
+data_april <- read_csv("Deliverable3/input_data/listings_april.csv") |>
   filter(neighbourhood_group == "Christchurch City") |>
   mutate(month = "April", year = 2026)
 
-data_may <- read_csv("data/listings_may.csv") |>
+data_may <- read_csv("Deliverable3/input_data/listings_may.csv") |>
   filter(neighbourhood_group == "Christchurch City") |>
   mutate(month = "May", year = 2026)
 
-data_june <- read_csv("data/listings_june.csv") |>
+data_june <- read_csv("Deliverable3/input_data/listings_june.csv") |>
   filter(neighbourhood_group == "Christchurch City") |>
   mutate(month = "June", year = 2026)
 
@@ -45,7 +45,8 @@ listings_oct_to_june <- bind_rows(data_october, data_november, data_december,
                                   data_april, data_may, data_june)
 
 # Run Only Once to download the concatenated data-set in your data file
-write.csv(listings_oct_to_june, "data/listings_oct_to_june.csv", row.names = FALSE)
+write.csv(listings_oct_to_june, "Deliverable3/input_data/listings_oct_to_june.csv", row.names = FALSE)
+write.csv(listings_oct_to_june, "Deliverable3/output_data/listings_oct_to_june.csv", row.names = FALSE)
 
 
 
@@ -66,7 +67,7 @@ write.csv(listings_oct_to_june, "data/listings_oct_to_june.csv", row.names = FAL
 #___________________________________________________________________________________________________
 
 ## Discover
-listings_oct_to_june <- read_csv("data/listings_oct_to_june.csv") # MUST RUN
+listings_oct_to_june <- read_csv("Deliverable3/input_data/listings_oct_to_june.csv") # MUST RUN
 
 
 # Pallima statistics will be here
@@ -186,17 +187,17 @@ View(date_summary)
 
 write_csv(
   summary_all,
-  "data/summary_statistics.csv"
+  "Deliverable3/output_data/summary_statistics.csv"
 )
 
 write_csv(
   category_counts,
-  "data/category_counts.csv"
+  "Deliverable3/output_data/category_counts.csv"
 )
 
 write_csv(
   date_summary,
-  "data/date_summary.csv"
+  "Deliverable3/output_data/date_summary.csv"
 )
 
 #--- means your code should stop here for each part (helps prevent merging conflicts)
@@ -299,7 +300,7 @@ ggplot(listings_Lincoln_filtered,
 write_top <- function(data){ "Writes a csv file with the properties with highest reviews"
   filtered_data <- column_filter(data)
   top_reviews <- select_top(filtered_data)
-  write.csv(top_reviews, "data/top_reviews.csv", row.names = FALSE)
+  write.csv(top_reviews, "Deliverable3/output_data/top_reviews.csv", row.names = FALSE)
   top_reviews
 }
 
@@ -319,7 +320,9 @@ ggplot(listings_Ean_filtered,
     y = "Number of Listings"
   ) +
   theme_bw()
-]#---
+]
+
+#---
 
 #___________________________________________________________________________________________________
 

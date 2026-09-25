@@ -2,12 +2,10 @@
 "The output data we get will go into the Data3 Folder that you should have created"
 
 library(tidyverse)
-<<<<<<< HEAD:Deliverable4.R
-airbnb_data <- read_csv("data/listings_oct_to_june.csv",
-  col_types = cols(id = col_character()))
-=======
-listings_oct_to_june <- read_csv("Deliverable4/input_data/listings_oct_to_june.csv") # MUST RUN
->>>>>>> f1b873d115480868ac0f0e9c84cafa7d397f473b:Deliverable4/Deliverable4.R
+
+listings_oct_to_june <- read_csv("Deliverable4/input_data/listings_oct_to_june.csv",
+                                 col_types = cols(id = col_character())) # MUST RUN
+
 
 #___________________________________________________________________________________________________
 

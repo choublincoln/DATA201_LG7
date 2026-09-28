@@ -1,5 +1,5 @@
 import pandas as pd
-airbnb_data = pd.read_csv("data3/Airbnb_listings_cleaned.csv")
+airbnb_data = pd.read_csv("Deliverable5/input_data/Airbnb_listings_cleaned.csv")
 airbnb_data['sa2_code'] = None
 
 import requests

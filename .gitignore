@@ -66,6 +66,7 @@ Deliverable5/output_data
 
 # For API keys and other sensitive information
 Deliverable5/.env
+.env
 
 # placeholder
 Data2/

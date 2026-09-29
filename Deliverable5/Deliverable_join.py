@@ -7,12 +7,12 @@ import pandas as pd
 # =========================================================
 
 """Load the cleaned Airbnb and Tenancy Services datasets."""
-airbnb = pd.read_csv(
+airbnb_data = pd.read_csv(
     "Deliverable5/input_data/Airbnb_listings_sa2.csv",
     dtype={"id": "string"}
 )
 
-bond = pd.read_csv(
+bond_data = pd.read_csv(
     "Deliverable5/input_data/tenancy_cleaned.csv"
 )
 
@@ -24,9 +24,9 @@ bond = pd.read_csv(
 """Convert both area-code columns to strings so they can be matched consistently between the two datasets."
 strip() removes any extra whitespace. Rename Location Id so both datasets use the same column name for the area code."""
 
-airbnb["sa2_code"] = airbnb["sa2_code"].astype("string").str.strip()
-bond["Location Id"] = bond["Location Id"].astype("string").str.strip()
-bond = bond.rename(columns={"Location Id": "sa2_code"})
+airbnb_data["sa2_code"] = airbnb_data["sa2_code"].astype("string").str.strip()
+bond_data["Location Id"] = bond_data["Location Id"].astype("string").str.strip()
+bond_data = bond_data.rename(columns={"Location Id": "sa2_code"})
 
 
 # =========================================================
@@ -50,7 +50,7 @@ quarterly = {
     "December": 4
 }
 
-airbnb["quarter"] = airbnb["month"].map(quarterly)
+airbnb_data["quarter"] = airbnb_data["month"].map(quarterly)
 
 
 # =========================================================
@@ -67,11 +67,11 @@ bond_quarterly = {
     "2026-04-01": 2
 }
 
-bond["TimeFrame"] = bond["TimeFrame"].astype("string")
-bond["quarter"] = bond["TimeFrame"].map(bond_quarterly)
+bond_data["TimeFrame"] = bond_data["TimeFrame"].astype("string")
+bond_data["quarter"] = bond_data["TimeFrame"].map(bond_quarterly)
 
-print(bond["TimeFrame"].head())
-print(bond["quarter"].head())
+print(bond_data["TimeFrame"].head())
+print(bond_data["quarter"].head())
 
 
 # =========================================================
@@ -84,9 +84,9 @@ print(bond["quarter"].head())
 This prevents more specific categories from being
 included in the join."""
 
-bond_all = bond[
-    (bond["Dwelling Type"] == "ALL") &
-    (bond["Number Of Beds"] == "ALL")
+bond_data_aggregate = bond_data[
+    (bond_data["Dwelling Type"] == "ALL") &
+    (bond_data["Number Of Beds"] == "ALL")
 ].copy()
 
 
@@ -98,7 +98,7 @@ bond_all = bond[
 Duplicates could cause Airbnb rows to be duplicated
 when the datasets are joined."""
 
-duplicates = bond_all.duplicated(
+duplicates = bond_data_aggregate.duplicated(
     subset=["sa2_code", "quarter"]
 ).sum()
 
@@ -106,7 +106,7 @@ print("===================================")
 print("BOND DATA CHECK")
 print("===================================")
 
-print(f"Bond rows after filtering: {len(bond_all):,}")
+print(f"Bond rows after filtering: {len(bond_data_aggregate):,}")
 print(f"Duplicate SA2 + quarter combinations: {duplicates:,}")
 
 
@@ -119,8 +119,8 @@ Matching bond information is added where the SA2 code
 and quarter are the same in both datasets."""
 
 joined = pd.merge(
-    airbnb,
-    bond_all,
+    airbnb_data,
+    bond_data_aggregate,
     on=["sa2_code", "quarter"],
     how="left"
 )
@@ -138,7 +138,7 @@ print("===================================")
    to check for unexpected changes. Count Airbnb observations 
    that successfully matched with a bond median rent value."""
 
-print(f"Airbnb rows before join: {len(airbnb):,}")
+print(f"Airbnb rows before join: {len(airbnb_data):,}")
 print(f"Rows after join: {len(joined):,}")
 
 
@@ -173,7 +173,7 @@ output_file = "Deliverable5/output_data/Airbnb_bond_joined_final.csv"
 joined.to_csv(output_file, index=False)
 
 """Save the prepared bond dataset for testing/reference."""
-bond.to_csv(
+bond_data_aggregate.to_csv(
     "Deliverable5/input_data/tenancy_cleaned_test.csv",
     index=False
 )

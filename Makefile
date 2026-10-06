@@ -11,5 +11,5 @@ output_data/highest_reviews.rds: Deliverable3/Deliverable3_DataPipeline_Daniel.R
 output_data/date_difference.png: Deliverable3/Deliverable3_DataPipeline_Ean.R output_data/listings_oct_to_august.rds
 	Rscript Deliverable3/Deliverable3_DataPipeline_Ean.R
 	
-output_data/date_difference.png: Deliverable3/Deliverable3_DataPipeline_Lincoln.R output_data/listings_oct_to_august.rds
+output_data/price_distribution.png: Deliverable3/Deliverable3_DataPipeline_Lincoln.R output_data/listings_oct_to_august.rds
 	Rscript Deliverable3/Deliverable3_DataPipeline_Lincoln.R

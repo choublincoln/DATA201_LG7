@@ -9,11 +9,11 @@ library(tidyverse)
 # =========================================================
 
 # Load the combined Christchurch Airbnb dataset
-listings_oct_to_june <- read_csv(
-  "Deliverable3/input_data/listings_oct_to_june.csv"
+listings_oct_to_august <- readRDS(
+  "output_data/listings_oct_to_august.rds"
 )
 
-df <- listings_oct_to_june
+df <- listings_oct_to_august
 
 
 # ---------------------------------------------------------
@@ -124,7 +124,7 @@ category_counts <- df |>
     desc(count)
   )
 
-View(category_counts)
+
 
 
 # ---------------------------------------------------------
@@ -148,7 +148,7 @@ date_summary <- tibble(
   )
 )
 
-View(date_summary)
+
 
 
 # =========================================================
@@ -176,20 +176,14 @@ View(date_summary)
 # PUBLISH
 # =========================================================
 
+
+# Validating
+view(summary_all)
+view(category_counts)
+view(date_summary)
+
 # Save the summary statistics
-write_csv(
-  summary_all,
-  "Deliverable3/output_data/summary_statistics.csv"
-)
+saveRDS(summary_all, file = "output_data/summary_statistics.rds")
+saveRDS(category_counts, file = "output_data/category_counts.rds")
+saveRDS(date_summary, file = "output_data/date_summary.rds")
 
-# Save the category counts
-write_csv(
-  category_counts,
-  "Deliverable3/output_data/category_counts.csv"
-)
-
-# Save the last review date summary
-write_csv(
-  date_summary,
-  "Deliverable3/output_data/date_summary.csv"
-)

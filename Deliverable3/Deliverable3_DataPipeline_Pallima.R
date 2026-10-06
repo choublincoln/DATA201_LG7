@@ -186,4 +186,3 @@ view(date_summary)
 saveRDS(summary_all, file = "output_data/summary_statistics.rds")
 saveRDS(category_counts, file = "output_data/category_counts.rds")
 saveRDS(date_summary, file = "output_data/date_summary.rds")
-

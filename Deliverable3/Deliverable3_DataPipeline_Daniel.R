@@ -74,14 +74,10 @@ write_top <- function(data) {
   
   top_reviews <- select_top(filtered_data)
   
-  write.csv(
-    top_reviews,
-    "Deliverable3/output_data/top_reviews.csv",
-    row.names = FALSE
-  )
-  
   top_reviews
 }
 
 # Run the function using the June dataset
-write_top(data_june)
+highest_reviews <- write_top(input_data/listings_august)
+
+saveRDS(highest_reviews, file = "output_data/highest_reviews.rds")

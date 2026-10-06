@@ -113,7 +113,7 @@ if __name__ == "__main__":
     print("STARTING 15-ROW TEST")
     print("===================================")
 
-    with multiprocessing.Pool(processes=25) as pool:
+    with multiprocessing.Pool(processes=40) as pool:
         test_results = pool.map(get_sa2, test_rows)
 
     # Add SA2 results to the 15 rows

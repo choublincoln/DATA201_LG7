@@ -18,8 +18,8 @@ library(tidyverse)
 
 # Load the combined Airbnb dataset.
 
-listings_oct_to_august <- read_csv(
-  "Deliverable3/input_data/listings_oct_to_august.csv"
+listings_oct_to_august <- readRDS(
+  "output_data/listings_oct_to_august.rds"
 )
 
 
@@ -43,7 +43,7 @@ listings_oct_to_august <- listings_oct_to_august |>
 
 # Remove listings with missing price values.
 
-listings_Lincoln_filtered <- listings_oct_to_june |>
+listings_Lincoln_filtered <- listings_oct_to_august |>
   drop_na(price)
 
 
@@ -61,7 +61,7 @@ listings_Lincoln_filtered <- listings_oct_to_june |>
 # Create a bar chart showing the distribution of
 # Christchurch Airbnb listing prices.
 
-ggplot(
+plot <- ggplot(
   listings_Lincoln_filtered,
   aes(
     x = cut(
@@ -93,3 +93,11 @@ ggplot(
     y = "Number of Listings"
   ) +
   theme_bw()
+
+ggsave(
+  "output_data/price_distribution.png",
+  plot = plot,
+  width = 6,
+  height = 4,
+  dpi = 150
+)

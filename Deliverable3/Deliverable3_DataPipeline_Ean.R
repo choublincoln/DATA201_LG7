@@ -9,7 +9,7 @@ library(tidyverse)
 # =========================================================
 
 # Check the data type of last_review
-class(listings_oct_to_june$last_review)
+class(listings_oct_to_august$last_review)
 
 
 # =========================================================
@@ -45,7 +45,9 @@ listings_Ean_filtered <- listings_Ean_filtered |>
       month == "March" ~ as.Date("2026-03-30"),
       month == "April" ~ as.Date("2026-04-30"),
       month == "May" ~ as.Date("2026-05-30"),
-      month == "June" ~ as.Date("2026-06-30")
+      month == "June" ~ as.Date("2026-06-30"),
+      month == "July" ~ as.Date("2026-07-30"),
+      month == "August" ~ as.Date("2026-08-30")
     ),
     day_difference_review = as.numeric(
       dataset_date - last_review
@@ -83,3 +85,11 @@ ggplot(
     y = "Number of Listings"
   ) +
   theme_bw()
+
+ggsave(
+  "out/date_difference.png",
+  plot = plot,
+  width = 6,
+  height = 4,
+  dpi = 150
+)

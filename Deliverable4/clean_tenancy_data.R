@@ -1,21 +1,6 @@
-# =========================================================
-# IMPORT DATA
-# =========================================================
-
 library(tidyverse)
 
-listings_oct_to_august <- readRDS(
-  "output_data/listings_oct_to_august.rds"
-) # MUST RUN
-
-listings_oct_to_august$id <- as.character(listings_oct_to_august$id)
-
 bonds <- read_csv("input_data/bonds.csv")
-
-
-# =========================================================
-# FUNCTIONS (Daniels)
-# =========================================================
 
 drop_column <- function(data, col_name) {
   # Drops inputted columns.
@@ -37,7 +22,6 @@ tenancy_data <- function(data) {
   # Cleans Tenancy Services data and saves to file.
   na_row_drop <- drop_row(data, "Location Id", "NULL")
   all_row_drop <- drop_row(na_row_drop, "Location Id", "-99")
-  
   all_row_drop <- all_row_drop |>
     mutate(
       `Median Rent` = as.integer(`Median Rent`),
@@ -45,35 +29,9 @@ tenancy_data <- function(data) {
       `Upper Quartile Rent` = as.integer(`Upper Quartile Rent`),
       `Lower Quartile Rent` = as.integer(`Lower Quartile Rent`)
     )
-  
-  saveRDS(
-    all_row_drop,
-    "output_data/tenancy_cleaned.rds"
-  )
-  
-  print("New csv file created.")
-  
   view(all_row_drop)
+  all_row_drop
 }
-# =========================================================
-# AIRBNB CLEANING (Lincolns)
-# =========================================================
-
-Airbnb_listings_cleaned <- listings_oct_to_august |>
-  mutate(id = as.character(id)) |>
-  select(
-    id,
-    neighbourhood,
-    latitude,
-    longitude,
-    room_type,
-    price,
-    availability_365,
-    month,
-    year,
-    minimum_nights
-  )
-
 
 # =========================================================
 # TIMEFRAME FILTERING (Eans)
@@ -130,15 +88,6 @@ cat(
 # BONDS DATA CLEANING (Daniels)
 # =========================================================
 
-tenancy_data(bonds_filtered)
+clean_tenancy <- tenancy_data(bonds_filtered)
 
-
-# =========================================================
-# SAVE CLEANED DATA (Lincolns)
-# =========================================================
-
-# Validating
-view(Airbnb_listings_cleaned)
-
-
-saveRDS(Airbnb_listings_cleaned, "output_data/Airbnb_listings_cleaned.rds")
+saveRDS(clean_tenancy,"output_data/tenancy_cleaned.rds")

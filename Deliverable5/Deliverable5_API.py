@@ -1,19 +1,19 @@
 import pandas as pd
-airbnb_data = pd.read_csv("data3/Airbnb_listings_cleaned.csv")
-airbnb_data['sa2_code'] = None
-
-"Daniel's code"
 import requests
 import multiprocessing
 import time
 import os
 from dotenv import load_dotenv
 
+airbnb_data = pd.read_csv("Deliverable5/input_data/Airbnb_listings_cleaned.csv")
+airbnb_data['sa2_code'] = None
+
+
 # =========================================================
 # 1. LOAD AIRBNB DATA
 # =========================================================
 
-airbnb_data = pd.read_csv("data3/Airbnb_listings_cleaned.csv", dtype={"id": "string"})
+airbnb_data = pd.read_csv("Deliverable5/input_data/Airbnb_listings_cleaned.csv", dtype={"id": "string"})
 
 # =========================================================
 # 2. API DETAILS
@@ -123,7 +123,7 @@ if __name__ == "__main__":
         test_data.loc[index, "sa2_code"] = sa2_code
 
     # Save test file
-    test_file = "data3/Airbnb_listings_sa2_TEST.csv"
+    test_file = "Deliverable5/output_data/Airbnb_listings_sa2_TEST.csv"
     test_data.to_csv(test_file, index=False)
 
     print("\nTEST RESULTS")
@@ -214,7 +214,7 @@ if __name__ == "__main__":
     # 7. SAVE DATASET
     # =========================================================
 
-    output_file = ("data3/Airbnb_listings_sa2.csv")
+    output_file = ("Deliverable5/input_data/Airbnb_listings_sa2.csv")
     airbnb_data.to_csv(output_file,index=False)
 
     # =========================================================
@@ -229,21 +229,3 @@ if __name__ == "__main__":
 
     print(f"Saved to: {output_file}")
     print(f"Total time: {elapsed / 60:.2f} minutes")
-
-#__________________________________________________________________________________________________________________________________________________________
-"Ean's code"
-
-
-
-
-
-
-#__________________________________________________________________________________________________________________________________________________________
-"Pallima's code"
-
-
-
-
-
-
-

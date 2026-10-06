@@ -4,6 +4,8 @@
 
 library(tidyverse)
 
+airbnb_data <- read.csv("input_data/listings_august.csv")
+
 # =========================================================
 # DISCOVER
 # =========================================================
@@ -27,7 +29,6 @@ column_filter <- function(csvfile) {
       -availability_365,
       -license
     )
-  
   drop_file
 }
 
@@ -37,14 +38,10 @@ column_filter <- function(csvfile) {
 select_top <- function(data) {
   num_reviews <- data |>
     select(id, name, number_of_reviews)
-  
   num_rows <- nrow(data)
   percent_rows <- num_rows * 0.1
-  
   row_sort <- num_reviews[order(-num_reviews$number_of_reviews), ]
-  
   top_properties <- row_sort[1:percent_rows, ]
-  
   top_properties
 }
 
@@ -70,6 +67,7 @@ select_top <- function(data) {
 # Writes the properties with the highest number of reviews
 # to a CSV file
 write_top <- function(data) {
+  
   filtered_data <- column_filter(data)
   
   top_reviews <- select_top(filtered_data)
@@ -78,6 +76,6 @@ write_top <- function(data) {
 }
 
 # Run the function using the June dataset
-highest_reviews <- write_top(input_data/listings_august)
+highest_reviews <- write_top(airbnb_data)
 
 saveRDS(highest_reviews, file = "output_data/highest_reviews.rds")

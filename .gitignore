@@ -68,11 +68,15 @@ Deliverable5/output_data
 Deliverable5/.env
 .env
 
+# excluding deliverable7 data files
+Deliverable7/input_data
+Deliverable7/output_data
+
 # placeholder
 Data2/
 
 # placeholder
-Data3/
+output_data/
 
 # placeholder
-data/
+input_data/

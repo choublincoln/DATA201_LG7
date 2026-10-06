@@ -16,13 +16,13 @@ bonds <- read_csv("Deliverable4/input_data/bonds.csv")
 # FUNCTIONS (Daniels)
 # =========================================================
 
-drop_column <- function(data, col_name) {
+drop_column <- function(data, col_name) {"Drops inputed columns."
   drop_file <- data |>
     select(-all_of(col_name))
   drop_file
 }
 
-drop_row <- function(data, col_name, value) {
+drop_row <- function(data, col_name, value) {"Drops inputed rows."
   data %>%
     filter(
       !is.na(.data[[col_name]]),
@@ -30,7 +30,7 @@ drop_row <- function(data, col_name, value) {
     )
 }
 
-tenancy_data <- function(data) {
+tenancy_data <- function(data) {"Cleans Tenancy Services data and saves to file."
   na_row_drop <- drop_row(data, "Location Id", "NULL")
   all_row_drop <- drop_row(na_row_drop, "Location Id", "-99")
   
@@ -96,19 +96,21 @@ sort(unique(bonds_filtered$TimeFrame))
 # BONDS DATA EXPLORATION (Daniels)
 # =========================================================
 
-null_per <- mean(
+percentage_na_values <- mean(
   bonds_filtered$`Location Id` == "NULL"
 ) * 100
 
-aggregate_per <- mean(
+percentage_agg_values <- mean(
   bonds_filtered$`Location Id` == "-99"
 ) * 100
 
-count_na <- bonds_filtered |> 
+count_na_values <- bonds_filtered |> 
   count(`Location Id` == "NULL")
 
-count_agg <- bonds_filtered |> 
+count_agg_values <- bonds_filtered |> 
   count(`Location Id` == "-99")
+
+# Print Results:
 
 cat(
   "Percentage of null values in Location ID:",

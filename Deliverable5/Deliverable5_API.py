@@ -1,12 +1,13 @@
 import pandas as pd
-airbnb_data = pd.read_csv("Deliverable5/input_data/Airbnb_listings_cleaned.csv")
-airbnb_data['sa2_code'] = None
-
 import requests
 import multiprocessing
 import time
 import os
 from dotenv import load_dotenv
+
+airbnb_data = pd.read_csv("Deliverable5/input_data/Airbnb_listings_cleaned.csv")
+airbnb_data['sa2_code'] = None
+
 
 # =========================================================
 # 1. LOAD AIRBNB DATA

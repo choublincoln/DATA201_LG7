@@ -18,14 +18,14 @@ library(tidyverse)
 
 # Load the combined Airbnb dataset.
 
-listings_oct_to_june <- read_csv(
-  "Deliverable3/input_data/listings_oct_to_june.csv"
+listings_oct_to_august <- read_csv(
+  "Deliverable3/input_data/listings_oct_to_august.csv"
 )
 
 
 # Remove columns that are not required for the analysis.
 
-listings_oct_to_june <- listings_oct_to_june |>
+listings_oct_to_august <- listings_oct_to_august |>
   select(
     -host_id,
     -host_name,

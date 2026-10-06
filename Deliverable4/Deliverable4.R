@@ -4,8 +4,8 @@
 
 library(tidyverse)
 
-listings_oct_to_june <- read_csv(
-  "Deliverable4/input_data/listings_oct_to_june.csv",
+listings_oct_to_august <- read_csv(
+  "Deliverable4/input_data/listings_oct_to_august.csv",
   col_types = cols(id = col_character())
 ) # MUST RUN
 
@@ -47,6 +47,11 @@ tenancy_data <- function(data) {"Cleans Tenancy Services data and saves to file.
     "Deliverable4/output_data/tenancy_cleaned.csv",
     row.names = FALSE
   )
+  write.csv(
+    all_row_drop,
+    "Deliverable5/input_data/tenancy_cleaned.csv",
+    row.names = FALSE
+  )
   
   print("New csv file created.")
   
@@ -58,7 +63,7 @@ tenancy_data <- function(data) {"Cleans Tenancy Services data and saves to file.
 # AIRBNB CLEANING (Lincolns)
 # =========================================================
 
-Airbnb_listings_cleaned <- listings_oct_to_june |>
+Airbnb_listings_cleaned <- listings_oct_to_august |>
   mutate(id = as.character(id)) |>
   select(
     id,
@@ -110,19 +115,6 @@ count_na_values <- bonds_filtered |>
 count_agg_values <- bonds_filtered |> 
   count(`Location Id` == "-99")
 
-# Print Results:
-
-cat(
-  "Percentage of null values in Location ID:",
-  null_per,
-  "%\n"
-)
-
-cat(
-  "Percentage of -99 values in Location ID:",
-  aggregate_per,
-  "%\n"
-)
 
 
 # =========================================================
@@ -139,5 +131,13 @@ tenancy_data(bonds_filtered)
 write.csv(
   Airbnb_listings_cleaned,
   "Deliverable4/output_data/Airbnb_listings_cleaned.csv",
+  row.names = FALSE
+)
+
+
+# For next Deliverable (5)
+write.csv(
+  Airbnb_listings_cleaned,
+  "Deliverable5/input_data/Airbnb_listings_cleaned.csv",
   row.names = FALSE
 )

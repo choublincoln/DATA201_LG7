@@ -43,10 +43,18 @@ data_june <- read_csv("Deliverable3/input_data/listings_june.csv") |>
   filter(neighbourhood_group == "Christchurch City") |>
   mutate(month = "June", year = 2026)
 
+# New code from Deliverable 7 to include July and August data in the combined dataset.
+data_july <- read_csv("Deliverable7/input_data/listings_july.csv") |>
+  filter(neighbourhood_group == "Christchurch City") |>
+  mutate(month = "July", year = 2026)
+
+data_august <- read_csv("Deliverable7/input_data/listings_august.csv") |>
+  filter(neighbourhood_group == "Christchurch City") |>
+  mutate(month = "August", year = 2026)
 
 # Combine all monthly Christchurch listings into one dataset.
 
-listings_oct_to_june <- bind_rows(
+listings_oct_to_august <- bind_rows(
   data_october,
   data_november,
   data_december,
@@ -55,7 +63,9 @@ listings_oct_to_june <- bind_rows(
   data_march,
   data_april,
   data_may,
-  data_june
+  data_june,
+  data_july,
+  data_august
 )
 
 
@@ -63,13 +73,20 @@ listings_oct_to_june <- bind_rows(
 # The input copy allows the pipeline to use the combined data later.
 
 write.csv(
-  listings_oct_to_june,
-  "Deliverable3/input_data/listings_oct_to_june.csv",
+  listings_oct_to_august,
+  "Deliverable3/input_data/listings_oct_to_august.csv",
   row.names = FALSE
 )
 
 write.csv(
-  listings_oct_to_june,
-  "Deliverable3/output_data/listings_oct_to_june.csv",
+  listings_oct_to_august,
+  "Deliverable3/output_data/listings_oct_to_august.csv",
+  row.names = FALSE
+)
+
+# For next Deliverable (4)
+write.csv(
+  listings_oct_to_august,
+  "Deliverable4/input_data/listings_oct_to_august.csv",
   row.names = FALSE
 )

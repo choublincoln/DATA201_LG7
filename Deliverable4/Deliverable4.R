@@ -4,25 +4,28 @@
 
 library(tidyverse)
 
-listings_oct_to_june <- read_csv(
-  "Deliverable4/input_data/listings_oct_to_june.csv",
-  col_types = cols(id = col_character())
+listings_oct_to_august <- readRDS(
+  "output_data/listings_oct_to_august.rds"
 ) # MUST RUN
 
-bonds <- read_csv("Deliverable4/input_data/bonds.csv")
+listings_oct_to_august$id <- as.character(listings_oct_to_august$id)
+
+bonds <- read_csv("input_data/bonds.csv")
 
 
 # =========================================================
 # FUNCTIONS (Daniels)
 # =========================================================
 
-drop_column <- function(data, col_name) {"Drops inputed columns."
+drop_column <- function(data, col_name) {
+  # Drops inputted columns.
   drop_file <- data |>
     select(-all_of(col_name))
   drop_file
 }
 
-drop_row <- function(data, col_name, value) {"Drops inputed rows."
+drop_row <- function(data, col_name, value) {
+  # Drops inputted rows.
   data %>%
     filter(
       !is.na(.data[[col_name]]),
@@ -30,7 +33,8 @@ drop_row <- function(data, col_name, value) {"Drops inputed rows."
     )
 }
 
-tenancy_data <- function(data) {"Cleans Tenancy Services data and saves to file."
+tenancy_data <- function(data) {
+  # Cleans Tenancy Services data and saves to file.
   na_row_drop <- drop_row(data, "Location Id", "NULL")
   all_row_drop <- drop_row(na_row_drop, "Location Id", "-99")
   
@@ -42,23 +46,20 @@ tenancy_data <- function(data) {"Cleans Tenancy Services data and saves to file.
       `Lower Quartile Rent` = as.integer(`Lower Quartile Rent`)
     )
   
-  write.csv(
+  saveRDS(
     all_row_drop,
-    "Deliverable4/output_data/tenancy_cleaned.csv",
-    row.names = FALSE
+    "output_data/tenancy_cleaned.rds"
   )
   
   print("New csv file created.")
   
-  all_row_drop
+  view(all_row_drop)
 }
-
-
 # =========================================================
 # AIRBNB CLEANING (Lincolns)
 # =========================================================
 
-Airbnb_listings_cleaned <- listings_oct_to_june |>
+Airbnb_listings_cleaned <- listings_oct_to_august |>
   mutate(id = as.character(id)) |>
   select(
     id,
@@ -114,13 +115,13 @@ count_agg_values <- bonds_filtered |>
 
 cat(
   "Percentage of null values in Location ID:",
-  null_per,
+  percentage_na_values,
   "%\n"
 )
 
 cat(
   "Percentage of -99 values in Location ID:",
-  aggregate_per,
+  percentage_agg_values,
   "%\n"
 )
 
@@ -136,8 +137,8 @@ tenancy_data(bonds_filtered)
 # SAVE CLEANED DATA (Lincolns)
 # =========================================================
 
-write.csv(
-  Airbnb_listings_cleaned,
-  "Deliverable4/output_data/Airbnb_listings_cleaned.csv",
-  row.names = FALSE
-)
+# Validating
+view(Airbnb_listings_cleaned)
+
+
+saveRDS(Airbnb_listings_cleaned, "output_data/Airbnb_listings_cleaned.rds")

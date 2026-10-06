@@ -25,5 +25,8 @@ output_data/date_difference.png: Deliverable3/Deliverable3_DataPipeline_Ean.R ou
 output_data/price_distribution.png: Deliverable3/Deliverable3_DataPipeline_Lincoln.R output_data/listings_oct_to_august.rds
 	Rscript Deliverable3/Deliverable3_DataPipeline_Lincoln.R
 
-output_data/Airbnb_listings_cleaned.rds: Deliverable4/Deliverable4.R output_data/listings_oct_to_august.rds
-	Rscript Deliverable4/Deliverable4.R
+output_data/airbnb_listings_cleaned.rds: Deliverable4/clean_airbnb_data.R output_data/listings_oct_to_august.rds
+	Rscript Deliverable4/clean_airbnb_data.R
+
+output_data/tenancy_cleaned.rds: Deliverable4/clean_tenancy_data.R input_data/bonds.csv
+	Rscript Deliverable4/clean_tenancy_data.R

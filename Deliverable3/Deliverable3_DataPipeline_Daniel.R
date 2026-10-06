@@ -78,8 +78,8 @@ write_top <- function(data) {
 }
 
 
-# Read the June/August dataset
-august_data <- read_csv("input_data/listings_august.csv")
+# Read the oct to August dataset
+listings_oct_to_august <- readRDS("output_data/listings_oct_to_august.rds")
 
 # Select the properties with the highest number of reviews
 highest_reviews <- write_top(august_data)

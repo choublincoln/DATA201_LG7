@@ -28,5 +28,5 @@ output_data/price_distribution.png: Deliverable3/Deliverable3_DataPipeline_Linco
 output_data/airbnb_listings_cleaned.rds: Deliverable4/clean_airbnb_data.R output_data/listings_oct_to_august.rds
 	Rscript Deliverable4/clean_airbnb_data.R
 
-output_data/output_data/tenancy_cleaned.rds: Deliverable4/clean_tenancy_data.R input_data/bonds.csv
+output_data/tenancy_cleaned.rds: Deliverable4/clean_tenancy_data.R input_data/bonds.csv
 	Rscript Deliverable4/clean_tenancy_data.R

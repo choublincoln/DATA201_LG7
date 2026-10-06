@@ -47,7 +47,7 @@ listings_Ean_filtered <- listings_Ean_filtered |>
       month == "February" ~ as.Date("2026-02-28"),
       month == "March" ~ as.Date("2026-03-30"),
       month == "April" ~ as.Date("2026-04-30"),
-      month == "May" ~ as.Date("2026-05-30"),
+      month == "May" ~ as.Date("2026-05-30"), # Analysis here: people leaved late reviews in June causing negative days in May
       month == "June" ~ as.Date("2026-06-30"),
       month == "July" ~ as.Date("2026-07-30"),
       month == "August" ~ as.Date("2026-08-30")
@@ -57,9 +57,9 @@ listings_Ean_filtered <- listings_Ean_filtered |>
     )
   )
 
+# Excluding the late reviews causing the negative values
 listings_Ean_filtered <- listings_Ean_filtered |>
   filter(day_difference_review >= 0)
-
 # =========================================================
 # PUBLISH
 # =========================================================
@@ -91,6 +91,9 @@ plot <- ggplot(
     y = "Number of Listings"
   ) +
   theme_bw()
+
+# validation
+plot
 
 ggsave(
   "output_data/date_difference.png",

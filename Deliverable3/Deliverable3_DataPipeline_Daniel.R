@@ -35,15 +35,16 @@ column_filter <- function(csvfile) {
 # Selects the properties with the highest number of reviews
 # (top 10% of listings)
 select_top <- function(data) {
+  
   num_reviews <- data |>
     select(id, name, number_of_reviews)
   
   num_rows <- nrow(data)
-  percent_rows <- num_rows * 0.1
+  percent_rows <- ceiling(num_rows * 0.1)
   
-  row_sort <- num_reviews[order(-num_reviews$number_of_reviews), ]
-  
-  top_properties <- row_sort[1:percent_rows, ]
+  top_properties <- num_reviews |>
+    arrange(desc(number_of_reviews)) |>
+    slice_head(n = percent_rows)
   
   top_properties
 }
@@ -67,17 +68,24 @@ select_top <- function(data) {
 # PUBLISH
 # =========================================================
 
-# Writes the properties with the highest number of reviews
-# to a CSV file
+# Selects the properties with the highest number of reviews
 write_top <- function(data) {
-  filtered_data <- column_filter(data)
   
+  filtered_data <- column_filter(data)
   top_reviews <- select_top(filtered_data)
   
   top_reviews
 }
 
-# Run the function using the June dataset
-highest_reviews <- write_top(input_data/listings_august)
 
+# Read the June/August dataset
+august_data <- read_csv("input_data/listings_august.csv")
+
+# Select the properties with the highest number of reviews
+highest_reviews <- write_top(august_data)
+
+# Validation
+view(highest_reviews)
+
+# Save the results
 saveRDS(highest_reviews, file = "output_data/highest_reviews.rds")

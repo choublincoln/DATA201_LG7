@@ -4,6 +4,8 @@
 
 library(tidyverse)
 
+airbnb_data <- read.csv("input_data/listings_august.csv")
+
 # =========================================================
 # DISCOVER
 # =========================================================
@@ -27,7 +29,6 @@ column_filter <- function(csvfile) {
       -availability_365,
       -license
     )
-  
   drop_file
 }
 
@@ -38,7 +39,6 @@ select_top <- function(data) {
   
   num_reviews <- data |>
     select(id, name, number_of_reviews)
-  
   num_rows <- nrow(data)
   percent_rows <- ceiling(num_rows * 0.1)
   

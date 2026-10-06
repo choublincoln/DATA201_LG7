@@ -4,9 +4,12 @@
 
 library(tidyverse)
 
+
 # =========================================================
 # DISCOVER
 # =========================================================
+
+listings_oct_to_august <- readRDS("output_data/listings_oct_to_august.rds")
 
 # Check the data type of last_review
 class(listings_oct_to_august$last_review)
@@ -24,7 +27,7 @@ class(listings_oct_to_august$last_review)
 # =========================================================
 
 # Remove listings with missing last_review values
-listings_Ean_filtered <- listings_oct_to_june |>
+listings_Ean_filtered <- listings_oct_to_august |>
   drop_na(last_review)
 
 
@@ -54,6 +57,8 @@ listings_Ean_filtered <- listings_Ean_filtered |>
     )
   )
 
+listings_Ean_filtered <- listings_Ean_filtered |>
+  filter(day_difference_review >= 0)
 
 # =========================================================
 # PUBLISH
@@ -61,7 +66,7 @@ listings_Ean_filtered <- listings_Ean_filtered |>
 
 # Plot the distribution of the number of days between
 # the dataset date and the last review
-ggplot(
+plot <- ggplot(
   listings_Ean_filtered,
   aes(
     x = cut(
@@ -74,7 +79,8 @@ ggplot(
         "201–500",
         "501–1000",
         "1000+"
-      )
+      ),
+      include.lowest = TRUE
     )
   )
 ) +
@@ -87,7 +93,7 @@ ggplot(
   theme_bw()
 
 ggsave(
-  "out/date_difference.png",
+  "output_data/date_difference.png",
   plot = plot,
   width = 6,
   height = 4,

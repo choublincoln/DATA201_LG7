@@ -47,3 +47,36 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# excluding deliverable2 data files 
+Deliverable2/input_data
+Deliverable2/output_data
+
+# excluding deliverable3 data files 
+Deliverable3/input_data
+Deliverable3/output_data
+
+# excluding deliverable4 data files 
+Deliverable4/input_data
+Deliverable4/output_data
+
+# excluding deliverable5 data files
+Deliverable5/input_data
+Deliverable5/output_data
+
+# For API keys and other sensitive information
+Deliverable5/.env
+.env
+
+# excluding deliverable7 data files
+Deliverable7/input_data
+Deliverable7/output_data
+
+# placeholder
+Data2/
+
+# placeholder
+output_data/
+
+# placeholder
+input_data/

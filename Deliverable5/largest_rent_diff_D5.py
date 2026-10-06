@@ -1,8 +1,10 @@
 import pandas as pd
-rental_data = pd.read_csv("Deliverable5/input_data/Airbnb_bond_joined_final.csv")
+import pyreadr
+
+rental_data = pyreadr.read_r("input_data/Airbnb_bond_joined_final.rds")
 rental_data['price difference'] = None
 
-mapping = pd.read_csv("Deliverable5/input_data/geographic-areas-table-2023.csv")
+mapping = pd.read_csv("input_data/geographic-areas-table-2023.csv")
 
 week_days = 7
 
@@ -55,7 +57,6 @@ for sa3_code in sa3_code_list:
 
 print(f"SA3 Code with the largest price difference: {sa3_with_max_diff}, Max Price Difference: {max_diff}")
 
-## Saves price difference data to a CSV file for further analysis
+## Saves price difference data to an RDS file for further analysis
 
-output_file = ("Deliverable5/output_data/listings_sa3.csv")
-rental_drop_nan.to_csv(output_file,index=False)
+pyreadr.write_rds("output_data/listings_sa3_rent_diff.rds", rental_drop_nan)

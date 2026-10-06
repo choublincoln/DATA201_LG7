@@ -1,10 +1,11 @@
 import pandas as pd
+import pyreadr
 import matplotlib.pyplot as plt
 
 
 # Load the joined dataset
-joined = pd.read_csv(
-    "Deliverable5/input_data/Airbnb_bond_joined_final.csv",
+joined = pyreadr.read_r(
+    "output_data/Airbnb_bond_joined_final.rds",
     dtype={"id": "string", "sa2_code": "string"}
 )
 
@@ -107,6 +108,8 @@ plt.title(
 plt.xlabel("SA2 Location Code")
 plt.ylabel("Number of Properties")
 plt.xticks(rotation=45)
+
+plt.savefig("output_data/airbnb_vs_rentals.png", bbox_inches='tight', dpi=300)
 
 plt.tight_layout()
 plt.show()

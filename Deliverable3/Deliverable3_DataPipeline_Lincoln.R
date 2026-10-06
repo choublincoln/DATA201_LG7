@@ -19,13 +19,13 @@ library(tidyverse)
 # Load the combined Airbnb dataset.
 
 listings_oct_to_june <- read_csv(
-  "Deliverable3/input_data/listings_oct_to_june.csv"
+  "input_data/listings_oct_to_august.csv"
 )
 
 
 # Remove columns that are not required for the analysis.
 
-listings_oct_to_june <- listings_oct_to_june |>
+listings_oct_to_august <- listings_oct_to_august |>
   select(
     -host_id,
     -host_name,
@@ -43,7 +43,7 @@ listings_oct_to_june <- listings_oct_to_june |>
 
 # Remove listings with missing price values.
 
-listings_Lincoln_filtered <- listings_oct_to_june |>
+listings_Lincoln_filtered <- listings_oct_to_august |>
   drop_na(price)
 
 
@@ -93,3 +93,11 @@ ggplot(
     y = "Number of Listings"
   ) +
   theme_bw()
+
+ggsave(
+  "out/price_distribution.png",
+  plot = plot,
+  width = 6,
+  height = 4,
+  dpi = 150
+)

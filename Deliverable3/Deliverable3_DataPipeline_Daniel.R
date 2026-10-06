@@ -82,7 +82,7 @@ write_top <- function(data) {
 listings_oct_to_august <- readRDS("output_data/listings_oct_to_august.rds")
 
 # Select the properties with the highest number of reviews
-highest_reviews <- write_top(august_data)
+highest_reviews <- write_top(listings_oct_to_august)
 
 # Validation
 view(highest_reviews)

@@ -71,7 +71,7 @@ output_data/Airbnb_bond_joined_final.rds: \
 	output_data/tenancy_cleaned.rds
 	Python Deliverable5/Deliverable5_join.py
 
-output_data/airbnb_vs_rentals.png: \
+output_data/airbnb_vs_rentals_sa3.png: \
 	Deliverable5/Delivarable5_Ean.py \
 	output_data/Airbnb_bond_joined_final.rds
 	Python Deliverable5/Delivarable5_Ean.py
@@ -101,6 +101,7 @@ report.html: \
 	output_data/tenancy_cleaned.rds \
 	output_data/Airbnb_listings_sa2.rds \
 	output_data/Airbnb_bond_joined_final.rds
+	output_data/airbnb_vs_rentals_sa3.png \
 	quarto render report.qmd
 
 
@@ -117,4 +118,5 @@ clean:
 	      output_data/tenancy_cleaned.rds \
 	      output_data/Airbnb_listings_sa2.rds \
 	      output_data/Airbnb_listings_sa2_TEST.rds \
+		  output_data/airbnb_vs_rentals_sa3.png \
 	      report.html

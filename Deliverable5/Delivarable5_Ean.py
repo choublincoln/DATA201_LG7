@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 
 # Load the joined dataset
 joined = pyreadr.read_r(
-    "output_data/Airbnb_bond_joined_final.rds",
-    dtype={"id": "string", "sa2_code": "string"}
+    "output_data/Airbnb_bond_joined_final.rds"
 )
 
 

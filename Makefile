@@ -46,14 +46,14 @@ output_data/price_distribution.png: \
 # =========================================================
 
 output_data/airbnb_listings_cleaned.rds: \
-	clean_airbnb_data.R \
+	Deliverable4/clean_airbnb_data.R \
 	output_data/listings_oct_to_august.rds
-	Rscript clean_airbnb_data.R
+	Rscript Deliverable4/clean_airbnb_data.R
 
 output_data/tenancy_cleaned.rds: \
-	clean_tenancy_data.R \
+	Deliverable4/clean_tenancy_data.R \
 	input_data/bonds.csv
-	Rscript clean_tenancy_data.R
+	Rscript Deliverable4/clean_tenancy_data.R
 
 
 # =========================================================

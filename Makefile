@@ -116,5 +116,8 @@ clean:
 	      output_data/airbnb_listings_cleaned.rds \
 	      output_data/tenancy_cleaned.rds \
 	      output_data/Airbnb_listings_sa2.rds \
-	      output_data/Airbnb_listings_sa2_TEST.rds \
+	      output_data/Airbnb_bond_joined_final.rds \
+		  output_data/airbnb_vs_rentals.png \
+		  output_data/listings_sa3_rent_diff.rds \
+		  output_data/Christchurch_Central_Airbnb_prices.rds \
 	      report.html

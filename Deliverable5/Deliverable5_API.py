@@ -1,92 +1,40 @@
 # =========================================================
-# DELIVERABLE 5 - AIRBNB SA2 API QUERY
+# DELIVERABLE 5 - UNIQUE AIRBNB LISTINGS SA2 API QUERY
 # =========================================================
 
+import os
+import time
+import multiprocessing
 import pandas as pd
 import requests
-import multiprocessing
-import time
-import os
 import pyreadr
 from dotenv import load_dotenv
 
 
 # =========================================================
-# 1. LOAD CLEANED AIRBNB DATA
+# 1. FILE PATHS
 # =========================================================
 
-input_file = (
-    "output_data/Airbnb_listings_cleaned.rds"
+input_file = "output_data/Airbnb_listings_cleaned.rds"
+
+unique_output_file = (
+    "output_data/Airbnb_unique_listings_sa2.rds"
 )
 
-checkpoint_file = (
-    "output_data/Airbnb_listings_sa2_checkpoint.rds"
-)
+final_output_file = "output_data/Airbnb_listings_sa2.rds"
 
-airbnb_result = pyreadr.read_r(
-    input_file
-)
-
-airbnb_data = next(
-    iter(airbnb_result.values())
+test_output_file = (
+    "output_data/Airbnb_unique_listings_sa2_TEST.rds"
 )
 
 
 # =========================================================
-# 2. LOAD PREVIOUS CHECKPOINT IF IT EXISTS
-# =========================================================
-
-if os.path.exists(checkpoint_file):
-
-    print("===================================")
-    print("CHECKPOINT FOUND")
-    print("===================================")
-
-    print(
-        "Loading previous API progress..."
-    )
-
-    checkpoint_result = pyreadr.read_r(
-        checkpoint_file
-    )
-
-    airbnb_data = next(
-        iter(checkpoint_result.values())
-    )
-
-    print(
-        "Previous progress loaded."
-    )
-
-else:
-
-    print(
-        "No checkpoint found."
-    )
-
-    # Create SA2 column for first run
-    airbnb_data["sa2_code"] = None
-
-
-# Ensure Airbnb ID is treated as text
-airbnb_data["id"] = airbnb_data["id"].astype("string")
-
-
-# Make sure SA2 column exists
-if "sa2_code" not in airbnb_data.columns:
-
-    airbnb_data["sa2_code"] = None
-
-
-# =========================================================
-# 3. API DETAILS
+# 2. API DETAILS
 # =========================================================
 
 load_dotenv()
 
-API_KEY = os.getenv(
-    "DATAFINDER_API_KEY"
-)
+API_KEY = os.getenv("DATAFINDER_API_KEY")
 
 LAYER = 123515
 
@@ -94,15 +42,21 @@ API_URL = (
     "https://datafinder.stats.govt.nz/services/query/v1/vector.json"
 )
 
+if not API_KEY:
+    raise ValueError(
+        "DATAFINDER_API_KEY was not found. "
+        "Check that your .env file contains the API key."
+    )
+
 
 # =========================================================
-# 4. FUNCTION TO GET SA2 CODE
+# 3. FUNCTION TO GET SA2 CODE
 # =========================================================
 
 def get_sa2(row):
+    """Query the Stats NZ Datafinder API for one unique listing."""
 
-    index, lat, lon = row
-
+    listing_id, lat, lon = row
 
     # -----------------------------------------------------
     # Check for missing coordinates
@@ -110,12 +64,9 @@ def get_sa2(row):
 
     if pd.isna(lat) or pd.isna(lon):
 
-        print(
-            f"Row {index} | Missing coordinates"
-        )
+        print(f"Listing {listing_id} | Missing coordinates")
 
-        return index, None
-
+        return listing_id, None
 
     # -----------------------------------------------------
     # Construct API URL
@@ -133,13 +84,12 @@ def get_sa2(row):
         f"&with_field_names=true"
     )
 
-
     # -----------------------------------------------------
     # Retry settings
     # -----------------------------------------------------
 
     max_retries = 5
-
+    data = None
 
     for attempt in range(max_retries):
 
@@ -150,143 +100,107 @@ def get_sa2(row):
                 timeout=10
             )
 
-
-            # =============================================
-            # SUCCESS
-            # =============================================
+            # ---------------------------------------------
+            # Successful response
+            # ---------------------------------------------
 
             if response.status_code == 200:
 
                 data = response.json()
-
                 break
 
-
-            # =============================================
-            # RATE LIMITED
-            # =============================================
+            # ---------------------------------------------
+            # Rate limited
+            # ---------------------------------------------
 
             elif response.status_code == 429:
 
-                retry_after = (
-                    response.headers.get(
-                        "Retry-After"
-                    )
+                retry_after = response.headers.get(
+                    "Retry-After"
                 )
 
-
                 if retry_after is not None:
-
-                    wait_time = float(
-                        retry_after
-                    )
-
+                    wait_time = float(retry_after)
                 else:
-
                     wait_time = 2 ** attempt
 
-
                 print(
-                    f"Row {index} | "
+                    f"Listing {listing_id} | "
                     f"Rate limited | "
                     f"Waiting {wait_time:.1f}s..."
                 )
 
+                time.sleep(wait_time)
 
-                time.sleep(
-                    wait_time
-                )
-
-
-            # =============================================
-            # OTHER API ERROR
-            # =============================================
+            # ---------------------------------------------
+            # Other API errors
+            # ---------------------------------------------
 
             else:
 
                 print(
-                    f"Row {index} FAILED | "
-                    f"Status: "
-                    f"{response.status_code} | "
+                    f"Listing {listing_id} FAILED | "
+                    f"Status: {response.status_code} | "
                     f"{response.text[:100]}"
                 )
 
-                return index, None
+                return listing_id, None
 
-
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException as error:
 
             wait_time = 2 ** attempt
 
-
             print(
-                f"Row {index} | "
-                f"Request error: {e} | "
-                f"Retrying in "
-                f"{wait_time}s..."
+                f"Listing {listing_id} | "
+                f"Request error: {error} | "
+                f"Retrying in {wait_time}s..."
             )
 
-
-            time.sleep(
-                wait_time
-            )
-
+            time.sleep(wait_time)
 
     else:
 
         print(
-            f"Row {index} | "
-            f"Failed after "
-            f"{max_retries} attempts"
+            f"Listing {listing_id} | "
+            f"Failed after {max_retries} attempts"
         )
 
-        return index, None
+        return listing_id, None
 
+    if data is None:
+        return listing_id, None
 
     # =====================================================
     # SEARCH RESPONSE FOR SA2
     # =====================================================
 
     def find_sa2(obj):
+        """Recursively search an API response for the SA2 field."""
 
         if isinstance(obj, dict):
 
             if "SA22026_V1_00" in obj:
-
                 return obj
-
 
             for value in obj.values():
 
-                result = find_sa2(
-                    value
-                )
+                result = find_sa2(value)
 
                 if result is not None:
-
                     return result
-
 
         elif isinstance(obj, list):
 
             for item in obj:
 
-                result = find_sa2(
-                    item
-                )
+                result = find_sa2(item)
 
                 if result is not None:
-
                     return result
-
 
         return None
 
-
-    properties = find_sa2(
-        data
-    )
-
+    properties = find_sa2(data)
 
     # =====================================================
     # EXTRACT SA2 CODE
@@ -294,509 +208,293 @@ def get_sa2(row):
 
     if properties is not None:
 
-        sa2_code = properties[
-            "SA22026_V1_00"
-        ]
+        sa2_code = properties.get("SA22026_V1_00")
 
-        return index, sa2_code
-
+        return listing_id, sa2_code
 
     else:
 
-        print(
-            f"Row {index} | "
-            f"No SA2 found"
-        )
+        print(f"Listing {listing_id} | No SA2 found")
 
-        return index, None
+        return listing_id, None
 
 
 # =========================================================
-# 5. RUN API
+# 4. MAIN SCRIPT
 # =========================================================
 
 if __name__ == "__main__":
 
+    # =====================================================
+    # 4A. LOAD AIRBNB DATA
+    # =====================================================
+
+    airbnb_result = pyreadr.read_r(input_file)
+    airbnb_data = next(iter(airbnb_result.values()))
+
+    # Ensure listing IDs are treated as text.
+    airbnb_data["id"] = airbnb_data["id"].astype("string")
 
     # =====================================================
-    # 5A. CHECK HOW MUCH DATA REMAINS
+    # 4B. CREATE UNIQUE LISTINGS DATAFRAME
     # =====================================================
 
-    remaining_rows = [
-        i
-        for i in airbnb_data.index
-        if pd.isna(
-            airbnb_data.loc[
-                i,
-                "sa2_code"
-            ]
-        )
-    ]
-
-
-    total_remaining = len(
-        remaining_rows
+    # Keep one row per unique listing ID and its coordinates.
+    unique_listings = (
+        airbnb_data[["id", "latitude", "longitude"]]
+        .drop_duplicates(subset=["id"])
+        .copy()
+        .reset_index(drop=True)
     )
 
-
-    total_dataset = len(
-        airbnb_data
+    # Create a column to store the SA2 codes.
+    unique_listings["sa2_code"] = pd.Series(
+        [None] * len(unique_listings),
+        dtype="object"
     )
 
+    # Print dataset summary once.
+    print("===================================")
+    print("UNIQUE AIRBNB LISTINGS")
+    print("===================================")
+    print(f"Full Airbnb rows:       {len(airbnb_data):,}")
+    print(f"Unique listing IDs:     {len(unique_listings):,}")
+    print("===================================")
 
-    completed_before = (
-        total_dataset
-        - total_remaining
-    )
+    # =====================================================
+    # 4C. CHECK HOW MUCH DATA REMAINS
+    # =====================================================
 
+    remaining_listings = unique_listings[
+        unique_listings["sa2_code"].isna()
+    ].copy()
+
+    total_unique = len(unique_listings)
+    total_remaining = len(remaining_listings)
 
     print()
     print("===================================")
-    print("AIRBNB SA2 API")
+    print("UNIQUE LISTING SA2 API")
     print("===================================")
-
-    print(
-        f"Total dataset:     "
-        f"{total_dataset:,}"
-    )
-
-    print(
-        f"Already completed: "
-        f"{completed_before:,}"
-    )
-
-    print(
-        f"Remaining:         "
-        f"{total_remaining:,}"
-    )
-
+    print(f"Unique listings:       {total_unique:,}")
+    print(f"Remaining to query:    {total_remaining:,}")
     print("===================================")
-
 
     # =====================================================
-    # 5B. STOP IF EVERYTHING IS COMPLETE
+    # 4D. RUN API QUERIES
     # =====================================================
 
     if total_remaining == 0:
 
-        print()
-        print(
-            "All rows already have SA2 codes."
-        )
+        print("No listings require API queries.")
 
     else:
 
+        # -------------------------------------------------
+        # 4D(i). RUN A 15-LISTING TEST
+        # -------------------------------------------------
 
-        # =================================================
-        # 5C. 15-ROW TEST
-        # =================================================
+        test_rows = remaining_listings.head(15)
 
-        test_indices = remaining_rows[:15]
-
-
-        test_rows = [
-            (
-                i,
-                airbnb_data.loc[
-                    i,
-                    "latitude"
-                ],
-                airbnb_data.loc[
-                    i,
-                    "longitude"
-                ]
-            )
-            for i in test_indices
+        test_inputs = [
+            (row.id, row.latitude, row.longitude)
+            for row in test_rows.itertuples(index=False)
         ]
-
 
         print()
         print("===================================")
-        print("STARTING 15-ROW TEST")
+        print("STARTING 15-LISTING TEST")
         print("===================================")
 
-
-        # Use only 40 processes
         with multiprocessing.Pool(
-            processes=40
+            processes=min(40, max(1, len(test_inputs)))
         ) as pool:
 
             test_results = pool.map(
                 get_sa2,
-                test_rows
+                test_inputs
             )
 
+        test_mapping = pd.DataFrame(
+            test_results,
+            columns=["id", "sa2_code"]
+        )
+
+        test_mapping["id"] = (
+            test_mapping["id"].astype("string")
+        )
+
+        # Add test results to the unique listings dataframe.
+        test_codes = test_mapping.set_index("id")["sa2_code"]
+
+        test_mask = unique_listings["id"].isin(
+            test_codes.index
+        )
+
+        unique_listings.loc[test_mask, "sa2_code"] = (
+            unique_listings.loc[test_mask, "id"].map(test_codes)
+        )
+
+        # Save the test results.
+        pyreadr.write_rds(
+            test_output_file,
+            test_mapping
+        )
+
+        print(f"Test mapping saved to: {test_output_file}")
+        print("15-listing test complete.")
 
         # -------------------------------------------------
-        # Add test results
+        # 4D(ii). PREPARE REMAINING UNIQUE LISTINGS
         # -------------------------------------------------
 
-        test_data = airbnb_data.loc[
-            test_indices
+        # Keep successful test results.
+        # Query only listings that still lack SA2 codes.
+        remaining_listings = unique_listings[
+            unique_listings["sa2_code"].isna()
         ].copy()
 
-
-        for index, sa2_code in test_results:
-
-            test_data.loc[
-                index,
-                "sa2_code"
-            ] = sa2_code
-
-
-        # -------------------------------------------------
-        # Save test file
-        # -------------------------------------------------
-
-        test_file = (
-            "output_data/"
-            "Airbnb_listings_sa2_TEST.rds"
-        )
-
-
-        pyreadr.write_rds(
-            test_file,
-            test_data
-        )
-
-
-        # -------------------------------------------------
-        # Display test results
-        # -------------------------------------------------
-
-        print()
-        print("TEST RESULTS")
-        print("===================================")
-
-
-        print(
-            test_data[
-                [
-                    "id",
-                    "latitude",
-                    "longitude",
-                    "sa2_code"
-                ]
-            ]
-        )
-
-
-        print()
-        print(
-            "Test file saved to:"
-        )
-
-        print(
-            test_file
-        )
-
-
-        print()
-        print("===================================")
-        print("15-ROW TEST COMPLETE")
-        print("===================================")
-
-
-        # =================================================
-        # 5D. PREPARE FULL DATASET
-        # =================================================
-
         rows = [
-            (
-                i,
-                airbnb_data.loc[
-                    i,
-                    "latitude"
-                ],
-                airbnb_data.loc[
-                    i,
-                    "longitude"
-                ]
-            )
-            for i in remaining_rows
+            (row.id, row.latitude, row.longitude)
+            for row in remaining_listings.itertuples(index=False)
         ]
 
+        total = len(rows)
+        n_processes = min(40, max(1, total))
 
-        total = len(
-            rows
-        )
+        # -------------------------------------------------
+        # 4D(iii). RUN FULL API QUERY
+        # -------------------------------------------------
 
+        if total > 0:
 
-        # Number of API processes
-        n_p = 40
+            print()
+            print("===================================")
+            print("STARTING REMAINING API QUERIES")
+            print("===================================")
+            print(f"Unique listings remaining: {total:,}")
+            print(f"Using {n_processes} processes...")
+            print()
 
-
-        print()
-        print("===================================")
-        print("STARTING FULL SA2 QUERY")
-        print("===================================")
-
-
-        print(
-            f"Rows remaining: "
-            f"{total:,}"
-        )
-
-
-        print(
-            f"Using {n_p} processes..."
-        )
-
-
-        print()
-
-
-        # =================================================
-        # 5E. RUN FULL API QUERY
-        # =================================================
-
-        start_time = time.time()
-
-        results = []
-
-
-        try:
+            start_time = time.time()
+            completed = 0
 
             with multiprocessing.Pool(
-                processes=n_p
+                processes=n_processes
             ) as pool:
 
-
-                for result in pool.imap_unordered(
+                for listing_id, sa2_code in pool.imap_unordered(
                     get_sa2,
                     rows
                 ):
 
-
-                    results.append(
-                        result
+                    # Update the corresponding listing by ID.
+                    matching = (
+                        unique_listings["id"] == listing_id
                     )
 
-
-                    completed = len(
-                        results
-                    )
-
-
-                    # =====================================
-                    # UPDATE DATAFRAME
-                    # =====================================
-
-                    index, sa2_code = result
-
-
-                    airbnb_data.loc[
-                        index,
+                    unique_listings.loc[
+                        matching,
                         "sa2_code"
                     ] = sa2_code
 
+                    completed += 1
 
-                    # =====================================
-                    # CHECKPOINT EVERY 1,000 ROWS
-                    # =====================================
+                    # -------------------------------------
+                    # Report progress every 100 rows
+                    # -------------------------------------
 
-                    if (
-                        completed % 1000 == 0
-                    ):
+                    if completed % 100 == 0 or completed == total:
 
-                        pyreadr.write_rds(
-                            checkpoint_file,
-                            airbnb_data
-                        )
-
-
-                        print()
-                        print(
-                            "-----------------------------------"
-                        )
-
-                        print(
-                            f"CHECKPOINT SAVED: "
-                            f"{completed:,} / "
-                            f"{total:,}"
-                        )
-
-                        print(
-                            f"File: "
-                            f"{checkpoint_file}"
-                        )
-
-                        print(
-                            "-----------------------------------"
-                        )
-
-
-                    # =====================================
-                    # PROGRESS EVERY 100 ROWS
-                    # =====================================
-
-                    if (
-                        completed % 100 == 0
-                        or completed == total
-                    ):
-
-
-                        elapsed = (
-                            time.time()
-                            - start_time
-                        )
-
+                        elapsed = time.time() - start_time
 
                         speed = (
-                            completed
-                            / elapsed
+                            completed / elapsed
+                            if elapsed > 0
+                            else 0
                         )
 
+                        remaining = total - completed
 
-                        remaining = (
-                            total
-                            - completed
-                        )
-
-
-                        estimated_seconds = (
+                        eta_seconds = (
                             remaining / speed
                             if speed > 0
                             else 0
                         )
 
-
                         print(
-                            f"Completed "
-                            f"{completed:,} / "
+                            f"Completed {completed:,} / "
                             f"{total:,} "
-                            f"("
-                            f"{completed / total * 100:.1f}%"
-                            f") | "
-                            f"{speed:.1f} rows/sec | "
-                            f"ETA: "
-                            f"{estimated_seconds / 60:.1f} min"
+                            f"({completed / total * 100:.1f}%) | "
+                            f"{speed:.1f} listings/sec | "
+                            f"ETA: {eta_seconds / 60:.1f} min"
                         )
 
+    # =====================================================
+    # 5. CHECK RESULTS
+    # =====================================================
 
-        except KeyboardInterrupt:
+    successful = unique_listings["sa2_code"].notna().sum()
+    failed = unique_listings["sa2_code"].isna().sum()
 
-            # =============================================
-            # SAVE PROGRESS IF MANUALLY STOPPED
-            # =============================================
+    print()
+    print("===================================")
+    print("UNIQUE LISTING RESULTS")
+    print("===================================")
+    print(f"Unique listings:       {len(unique_listings):,}")
+    print(f"Successful SA2 codes:  {successful:,}")
+    print(f"Missing SA2 codes:     {failed:,}")
 
-            print()
-            print(
-                "Script stopped manually."
-            )
+    # =====================================================
+    # 6. SAVE UNIQUE LISTING MAPPING
+    # =====================================================
 
+    pyreadr.write_rds(
+        unique_output_file,
+        unique_listings
+    )
 
-            print(
-                "Saving current progress..."
-            )
+    print(f"Unique mapping saved to: {unique_output_file}")
 
+    # =====================================================
+    # 7. JOIN SA2 CODES BACK TO FULL AIRBNB DATA
+    # =====================================================
 
-            pyreadr.write_rds(
-                checkpoint_file,
-                airbnb_data
-            )
+    # Keep only the listing ID and its SA2 code for the join.
+    sa2_mapping = unique_listings[
+        ["id", "sa2_code"]
+    ].drop_duplicates(
+        subset=["id"],
+        keep="last"
+    )
 
+    # Remove any previous SA2 column before joining.
+    airbnb_data = airbnb_data.drop(
+        columns=["sa2_code"],
+        errors="ignore"
+    )
 
-            print(
-                f"Checkpoint saved to: "
-                f"{checkpoint_file}"
-            )
+    # Each listing can match only one mapping row.
+    airbnb_final = airbnb_data.merge(
+        sa2_mapping,
+        on="id",
+        how="left",
+        validate="many_to_one"
+    )
 
+    # =====================================================
+    # 8. SAVE FINAL DATASET
+    # =====================================================
 
-            raise
+    pyreadr.write_rds(
+        final_output_file,
+        airbnb_final
+    )
 
-
-        # =================================================
-        # 6. CHECK RESULTS
-        # =================================================
-
-        successful = (
-            airbnb_data[
-                "sa2_code"
-            ]
-            .notna()
-            .sum()
-        )
-
-
-        failed = (
-            airbnb_data[
-                "sa2_code"
-            ]
-            .isna()
-            .sum()
-        )
-
-
-        print()
-        print("===================================")
-        print("RESULTS")
-        print("===================================")
-
-
-        print(
-            f"Total rows:       "
-            f"{total_dataset:,}"
-        )
-
-
-        print(
-            f"Successful:       "
-            f"{successful:,}"
-        )
-
-
-        print(
-            f"Failed / missing: "
-            f"{failed:,}"
-        )
-
-
-        # =================================================
-        # 7. SAVE FINAL DATASET
-        # =================================================
-
-        output_file = (
-            "output_data/"
-            "Airbnb_listings_sa2.rds"
-        )
-
-
-        pyreadr.write_rds(
-            output_file,
-            airbnb_data
-        )
-
-
-        # =================================================
-        # 8. FINISH
-        # =================================================
-
-        elapsed = (
-            time.time()
-            - start_time
-        )
-
-
-        print()
-        print("===================================")
-        print("DONE!")
-        print("===================================")
-
-
-        print(
-            f"Saved to: "
-            f"{output_file}"
-        )
-
-
-        print(
-            f"Total API time: "
-            f"{elapsed / 60:.2f} minutes"
-        )
-
-
-        print()
-        print(
-            "Final Airbnb SA2 dataset created."
-        )
+    print()
+    print("===================================")
+    print("DONE!")
+    print("===================================")
+    print(f"Unique mapping saved to: {unique_output_file}")
+    print(f"Full Airbnb dataset saved to: {final_output_file}")
+    print(f"Full Airbnb rows: {len(airbnb_final):,}")

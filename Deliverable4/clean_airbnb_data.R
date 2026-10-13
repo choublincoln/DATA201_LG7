@@ -4,37 +4,21 @@
 
 library(tidyverse)
 
-listings_oct_to_august <- readRDS(
-  "output_data/listings_oct_to_august.rds"
-) # MUST RUN
-
-listings_oct_to_august$id <- as.character(listings_oct_to_august$id)
+airbnb_data <- read_csv("output_data/Deliverable3_output/combined_listings.csv")
+airbnb_data$id <- as.character(airbnb_data$id) # makes sure id is treated as text
 
 # =========================================================
-# AIRBNB CLEANING (Lincolns)
+# AIRBNB CLEANING 
 # =========================================================
 
-airbnb_listings_cleaned <- listings_oct_to_august |>
+airbnb_listings_cleaned <- airbnb_data |>
   mutate(id = as.character(id)) |>
-  select(
-    id,
-    neighbourhood,
-    latitude,
-    longitude,
-    room_type,
-    price,
-    availability_365,
-    month,
-    year,
-    minimum_nights
-  )
+  select(id, neighbourhood, latitude, longitude, room_type, price,
+         availability_365, month, year, minimum_nights)
 
 # =========================================================
-# SAVE CLEANED DATA (Lincolns)
+# SAVE CLEANED DATA 
 # =========================================================
 
-# Validating
-view(airbnb_listings_cleaned)
 
-
-saveRDS(airbnb_listings_cleaned, "output_data/Airbnb_listings_cleaned.rds")
+write_csv(airbnb_listings_cleaned, "output_data/Deliverable4_output/Airbnb_listings_cleaned.csv")

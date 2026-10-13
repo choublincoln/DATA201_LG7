@@ -1,10 +1,10 @@
+
 # =========================================================
 # DANIEL'S DATA WRANGLING PIPELINE
 # =========================================================
 
 library(tidyverse)
-
-airbnb_data <- read.csv("input_data/listings_august.csv")
+combined_listings <- read.csv("output_data/Deliverable3_output/combined_listings.csv")
 
 # =========================================================
 # DISCOVER
@@ -20,31 +20,21 @@ airbnb_data <- read.csv("input_data/listings_august.csv")
 # Drops unnecessary columns from the dataset
 column_filter <- function(csvfile) {
   drop_file <- csvfile |>
-    select(
-      -host_id,
-      -host_name,
-      -room_type,
-      -minimum_nights,
-      -calculated_host_listings_count,
-      -availability_365,
-      -license
-    )
+    select(-host_id, -host_name, -room_type, -minimum_nights, -calculated_host_listings_count,
+      -availability_365, -license)
   drop_file
 }
 
 
-# Selects the properties with the highest number of reviews
-# (top 10% of listings)
+# Selects each unique property using its highest number of reviews
 select_top <- function(data) {
   
-  num_reviews <- data |>
-    select(id, name, number_of_reviews)
-  num_rows <- nrow(data)
-  percent_rows <- ceiling(num_rows * 0.1)
-  
-  top_properties <- num_reviews |>
-    arrange(desc(number_of_reviews)) |>
-    slice_head(n = percent_rows)
+  top_properties <- data |>
+    select(id, name, number_of_reviews) |>
+    group_by(id) |>
+    slice_max(order_by = number_of_reviews, n = 1, with_ties = FALSE, na_rm = TRUE) |>
+    ungroup() |>
+    arrange(desc(number_of_reviews))
   
   top_properties
 }
@@ -68,7 +58,7 @@ select_top <- function(data) {
 # PUBLISH
 # =========================================================
 
-# Selects the properties with the highest number of reviews
+# Selects unique properties with their highest number of reviews
 write_top <- function(data) {
   
   filtered_data <- column_filter(data)
@@ -78,14 +68,11 @@ write_top <- function(data) {
 }
 
 
-# Read the oct to August dataset
-listings_oct_to_august <- readRDS("output_data/listings_oct_to_august.rds")
-
-# Select the properties with the highest number of reviews
-highest_reviews <- write_top(listings_oct_to_august)
+# Select the properties with the highest number of reviews per ID
+highest_reviews <- write_top(combined_listings)
 
 # Validation
 view(highest_reviews)
 
 # Save the results
-saveRDS(highest_reviews, file = "output_data/highest_reviews.rds")
+write_csv(highest_reviews, "output_data/Deliverable3_output/highest_reviews.csv")

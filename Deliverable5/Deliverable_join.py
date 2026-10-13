@@ -1,7 +1,5 @@
 import pandas as pd
-import pyreadr
-
-"""Lincoln's code: Joining the Airbnb and Bonds datasets"""
+"""Joining the Airbnb and Bonds datasets"""
 
 
 # =========================================================
@@ -10,22 +8,8 @@ import pyreadr
 
 """Load the cleaned Airbnb and Tenancy Services datasets."""
 
-airbnb_result = pyreadr.read_r(
-    "output_data/Airbnb_listings_sa2.rds"
-)
-
-airbnb_data = next(
-    iter(airbnb_result.values())
-)
-
-
-bond_result = pyreadr.read_r(
-    "output_data/tenancy_cleaned.rds"
-)
-
-bond_data = next(
-    iter(bond_result.values())
-)
+airbnb_data = pd.read_csv("output_data/Deliverable5_output/Airbnb_listings_sa2.csv", dtype={"id": "string"})
+bond_data = pd.read_csv("output_data/Deliverable4_output/tenancy_cleaned.csv")
 
 
 # =========================================================
@@ -42,23 +26,11 @@ Rename Location Id so both datasets use the same column
 name for the area code.
 """
 
-airbnb_data["sa2_code"] = (
-    airbnb_data["sa2_code"]
-    .astype("string")
-    .str.strip()
-)
+airbnb_data["sa2_code"] = (airbnb_data["sa2_code"].astype("string").str.strip())
 
-bond_data["Location Id"] = (
-    bond_data["Location Id"]
-    .astype("string")
-    .str.strip()
-)
+bond_data["Location Id"] = (bond_data["Location Id"].astype("string").str.strip())
 
-bond_data = bond_data.rename(
-    columns={
-        "Location Id": "sa2_code"
-    }
-)
+bond_data = bond_data.rename(columns={"Location Id": "sa2_code"})
 
 
 # =========================================================
@@ -68,6 +40,9 @@ bond_data = bond_data.rename(
 """
 Convert each Airbnb month into its corresponding quarter
 so it can be matched with the bond data.
+
+Keep the year as well, so records from different years
+are not matched to the same quarter.
 """
 
 quarterly = {
@@ -85,9 +60,8 @@ quarterly = {
     "December": 4
 }
 
-airbnb_data["quarter"] = (
-    airbnb_data["month"].map(quarterly)
-)
+airbnb_data["quarter"] = (airbnb_data["month"].map(quarterly))
+airbnb_data["year"] = pd.to_numeric(airbnb_data["year"], errors="coerce").astype("Int64")
 
 
 # =========================================================
@@ -96,10 +70,10 @@ airbnb_data["quarter"] = (
 
 """
 Map each Tenancy Services reporting date to its
-corresponding quarter.
+corresponding year and quarter.
 
 Check that the TimeFrame values have been converted
-to the expected quarter values.
+to the expected year and quarter values.
 """
 
 bond_quarterly = {
@@ -108,24 +82,12 @@ bond_quarterly = {
     "2026-04-01": 2
 }
 
-bond_data["TimeFrame"] = (
-    bond_data["TimeFrame"]
-    .astype("string")
-)
-
-bond_data["quarter"] = (
-    bond_data["TimeFrame"]
-    .map(bond_quarterly)
-)
+bond_data["TimeFrame"] = pd.to_datetime(bond_data["TimeFrame"], errors="coerce")
+bond_data["year"] = (bond_data["TimeFrame"].dt.year.astype("Int64"))
+bond_data["quarter"] = (bond_data["TimeFrame"].dt.strftime("%Y-%m-%d").map(bond_quarterly))
 
 
-print(
-    bond_data["TimeFrame"].head()
-)
-
-print(
-    bond_data["quarter"].head()
-)
+print(bond_data[["TimeFrame", "year", "quarter"]].head())
 
 
 # =========================================================
@@ -142,10 +104,7 @@ This prevents more specific categories from being
 included in the join.
 """
 
-bond_data_aggregate = bond_data[
-    (bond_data["Dwelling Type"] == "ALL") &
-    (bond_data["Number Of Beds"] == "ALL")
-].copy()
+bond_data_aggregate = bond_data[(bond_data["Dwelling Type"] == "ALL") &(bond_data["Number Of Beds"] == "ALL")].copy()
 
 
 # =========================================================
@@ -153,46 +112,25 @@ bond_data_aggregate = bond_data[
 # =========================================================
 
 """
-Check for duplicate SA2 and quarter combinations.
+Check for duplicate SA2, year and quarter combinations.
 
 Duplicates could cause Airbnb rows to be duplicated
 when the datasets are joined.
 """
 
-duplicates = (
-    bond_data_aggregate
-    .duplicated(
-        subset=[
-            "sa2_code",
-            "quarter"
-        ]
-    )
-    .sum()
-)
+duplicates = (bond_data_aggregate.duplicated(subset=["sa2_code", "year", "quarter"]).sum())
+
+print("===================================")
+print("BOND DATA CHECK")
+
+print("===================================")
 
 
-print(
-    "==================================="
-)
+print(f"Bond rows after filtering: "
+      f"{len(bond_data_aggregate):,}")
 
-print(
-    "BOND DATA CHECK"
-)
-
-print(
-    "==================================="
-)
-
-
-print(
-    f"Bond rows after filtering: "
-    f"{len(bond_data_aggregate):,}"
-)
-
-print(
-    f"Duplicate SA2 + quarter combinations: "
-    f"{duplicates:,}"
-)
+print(f"Duplicate SA2 + year + quarter combinations: "
+      f"{duplicates:,}")
 
 
 # =========================================================
@@ -202,36 +140,23 @@ print(
 """
 Use a left join so all Airbnb listings are retained.
 
-Matching bond information is added where the SA2 code
-and quarter are the same in both datasets.
+Matching bond information is added where the SA2 code,
+year and quarter are the same in both datasets.
 """
 
-joined = pd.merge(
-    airbnb_data,
-    bond_data_aggregate,
-    on=[
-        "sa2_code",
-        "quarter"
-    ],
-    how="left"
-)
+joined = pd.merge(airbnb_data, bond_data_aggregate, on=["sa2_code", "year", "quarter"],
+    how="left",
+    validate="many_to_one")
 
 
 # =========================================================
 # 8. CHECK JOIN RESULTS
 # =========================================================
 
-print(
-    "\n==================================="
-)
+print("\n===================================")
+print("JOIN RESULTS")
 
-print(
-    "JOIN RESULTS"
-)
-
-print(
-    "==================================="
-)
+print("===================================")
 
 
 """
@@ -242,39 +167,22 @@ Count Airbnb observations that successfully matched
 with a bond median rent value.
 """
 
-print(
-    f"Airbnb rows before join: "
-    f"{len(airbnb_data):,}"
-)
+print(f"Airbnb rows before join: "
+      f"{len(airbnb_data):,}")
 
-print(
-    f"Rows after join: "
-    f"{len(joined):,}"
-)
+print(f"Rows after join: "
+      f"{len(joined):,}")
 
 
-matched = (
-    joined["Median Rent"]
-    .notna()
-    .sum()
-)
+matched = (joined["Median Rent"].notna().sum())
+unmatched = (joined["Median Rent"].isna().sum())
 
-unmatched = (
-    joined["Median Rent"]
-    .isna()
-    .sum()
-)
-
-
-print(
-    f"Matched Airbnb rows: "
-    f"{matched:,}"
-)
+print(f"Matched Airbnb rows: "
+      f"{matched:,}")
 
 print(
     f"Unmatched Airbnb rows: "
-    f"{unmatched:,}"
-)
+    f"{unmatched:,}")
 
 
 # =========================================================
@@ -286,70 +194,34 @@ Display the first five rows to visually check
 that the joined dataset looks correct.
 """
 
-print(
-    "\n==================================="
-)
-
-print(
-    "FIRST 5 ROWS"
-)
-
-print(
-    "==================================="
-)
+print("\n===================================")
+print("FIRST 5 ROWS")
+print("===================================")
 
 
-print(
-    joined.head()
-)
+print(joined.head())
 
 
 # =========================================================
 # 10. SAVE FINAL DATASET
 # =========================================================
 
-output_file = (
-    "output_data/Airbnb_bond_joined_final.rds"
-)
-
+output_file = ("output_data/Deliverable5_output/Airbnb_bond_joined_final.csv")
 
 """
-Convert pandas nullable values to standard Python None
-so pyreadr can write the dataframe correctly.
+Save the final joined dataset as a CSV file.
 """
 
-joined = joined.astype(object).where(
-    pd.notna(joined),
-    None
-)
-
-
-"""
-Save the final joined dataset as an RDS file.
-"""
-
-pyreadr.write_rds(
-    output_file,
-    joined
-)
+joined.to_csv(output_file, index=False)
 
 
 # =========================================================
 # 11. DONE
 # =========================================================
 
-print(
-    "\n==================================="
-)
+print("\n===================================")
+print("DONE!")
 
-print(
-    "DONE!"
-)
+print("===================================")
 
-print(
-    "==================================="
-)
-
-print(
-    f"Saved to: {output_file}"
-)
+print(f"Saved to: {output_file}")

@@ -1,47 +1,54 @@
 import pandas as pd
-import pyreadr
 
-rental_data = pyreadr.read_r("input_data/Airbnb_bond_joined_final.rds")
+rental_data = pd.read_csv("output_data/Deliverable5_output/Airbnb_bond_joined_final.csv", dtype={"id": "string"}, low_memory=False)
 rental_data['price difference'] = None
 
-mapping = pd.read_csv("input_data/geographic-areas-table-2023.csv")
-
+mapping = pd.read_csv("input_data/geographic-areas-table-2023.csv", dtype={"SA22023_code": "string", "SA32023_code": "string"})
 week_days = 7
+
+
+
 
 ## Joins airbnb dataset with geographic areas table to get the SA3 code for each SA2 code in the airbnb dataset.
 
-mapping_unique = mapping[
-    ["SA22023_code", "SA32023_code"]
-].drop_duplicates(subset="SA22023_code")
+rental_data["sa2_code"] = (rental_data["sa2_code"].astype("string").str.strip())
 
-rental_with_sa3 = rental_data.merge(
-    mapping_unique,
-    left_on="sa2_code",
-    right_on="SA22023_code",
-    how="left"
-)
+mapping["SA22023_code"] = (mapping["SA22023_code"].astype("string").str.strip())
+mapping["SA32023_code"] = (mapping["SA32023_code"].astype("string").str.strip())
+mapping_unique = mapping[["SA22023_code", "SA32023_code"]].drop_duplicates(subset="SA22023_code")
 
+rental_with_sa3 = rental_data.merge(mapping_unique, left_on="sa2_code", right_on="SA22023_code", how="left", validate="many_to_one")
 print("Number of rows in rental_with_sa3:", len(rental_with_sa3)) ## Checks for potential issues with the join operation
-
 rental_with_sa3 = rental_with_sa3.drop(columns=["SA22023_code"])
+
+
+
 
 ## Calculates the price difference between the Airbnb weekly rent and the Geometric Mean Rent
 
-for index, row in rental_with_sa3.iterrows():
-    sa2_code = row['sa2_code']
-    if pd.notnull(row['SA32023_code']) and pd.notnull(row['Geometric Mean Rent']):
-        airbnb_weekly_rent = row['price'] * week_days
-        rental_with_sa3.at[index, 'price difference'] = airbnb_weekly_rent - row['Geometric Mean Rent']
+rental_with_sa3["price"] = pd.to_numeric(rental_with_sa3["price"], errors="coerce")
+rental_with_sa3["Geometric Mean Rent"] = pd.to_numeric(rental_with_sa3["Geometric Mean Rent"], errors="coerce")
+rental_with_sa3['price difference'] = (rental_with_sa3["price"] * week_days - rental_with_sa3["Geometric Mean Rent"])
+
+rental_with_sa3.loc[rental_with_sa3["SA32023_code"].isna() |
+rental_with_sa3["Geometric Mean Rent"].isna() |
+    rental_with_sa3["price"].isna(), "price difference"] = None
+
+
+
 
 ## Checks for potential issues with the price difference calculation
 
 print("Number of rows in rental_with_sa3 with price differences:", len(rental_with_sa3[rental_with_sa3['price difference'].notnull()]))
 
+
+
+
 ## Calculates the maximum price difference for each SA3 code
 
-sa3_code_list = rental_with_sa3['SA32023_code'].unique().tolist()
+sa3_code_list = rental_with_sa3['SA32023_code'].dropna().unique().tolist()
 sa3_code_list.sort()
-rental_drop_nan = rental_with_sa3.dropna(subset=['price difference'])
+rental_drop_nan = rental_with_sa3.dropna(subset=['price difference']).copy()
 
 max_diff = 0
 sa3_with_max_diff = None
@@ -57,6 +64,11 @@ for sa3_code in sa3_code_list:
 
 print(f"SA3 Code with the largest price difference: {sa3_with_max_diff}, Max Price Difference: {max_diff}")
 
-## Saves price difference data to an RDS file for further analysis
 
-pyreadr.write_rds("output_data/listings_sa3_rent_diff.rds", rental_drop_nan)
+
+
+## Saves price difference data to a CSV file for further analysis
+
+output_file = "output_data/Deliverable5_output/listings_sa3_rent_diff.csv"
+rental_drop_nan.to_csv(output_file, index=False)
+print(f"Saved price difference data to: {output_file}")

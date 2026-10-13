@@ -1,8 +1,3 @@
-### TO RUN THE PIPELINE, USE THE FOLLOWING COMMANDS:
-# 1: DOWNLOAD "winget install GnuWin32.Make" IN THE TERMINAL TO INSTALL MAKE
-# 2: CLOSE AND REOPEN THE TERMINAL
-# 
-
 # =========================================================
 # DATA201 - AUTOMATED DATA WRANGLING PIPELINE
 # =========================================================

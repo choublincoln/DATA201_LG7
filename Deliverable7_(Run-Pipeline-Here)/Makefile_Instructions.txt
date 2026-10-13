@@ -38,11 +38,7 @@
 # STEP 2: INSTALL R
 # =========================================================
 #
-# If R is not already installed, download it from:
-#
-#   https://cran.r-project.org/bin/windows/base/
-#
-# Install R using the default options.
+# If R is not already installed, download it from vs code extensions
 #
 # Check whether Rscript is available:
 #
@@ -61,9 +57,7 @@
 # STEP 3: INSTALL PYTHON
 # =========================================================
 #
-# If Python is not installed, download it from:
-#
-#   https://www.python.org/downloads/
+# If Python is not installed, download it from vscode extensions
 #
 # Check whether Python is available:
 #
@@ -101,43 +95,13 @@
 # investigate the renv status and install the required
 # dependency through renv before running the pipeline.
 #
-# Do not delete renv.lock or update it unnecessarily.
 #
-# =========================================================
-# STEP 6: RUN THE COMPLETE PIPELINE
-# =========================================================
+# renv::install("tidyverse")
+# library(tidyverse)
+# renv::snapshot()
 #
-# From the DATA201_LG7-1 project root, run:
 #
-#   make -f Deliverable7/Makefile
-#   make -B -f Deliverable7/Makefile to force a rebuild if its already done
-#
-# This runs the required scripts for Deliverables 3, 4 and 5
-# according to the dependencies defined in this Makefile.
-#
-# Make may skip scripts if their outputs are already up to date.
-#
-# =========================================================
-# STEP 7: PREVIEW COMMANDS WITHOUT RUNNING THEM
-# =========================================================
-#
-# To preview the commands Make would execute, run:
-#
-#   make -f Deliverable7/Makefile -n
-#
-# This is a dry run. It does not execute the pipeline scripts.
-#
-# =========================================================
-# STEP 8: FORCE THE PIPELINE TO RERUN
-# =========================================================
-#
-# To force Make to rebuild all targets, run:
-#
-#   make -B -f Deliverable7/Makefile
-#
-# WARNING:
-# This may rerun the API lookup and make additional
-# DataFinder requests. Avoid unnecessary repeated API calls.
+# Do not delete renv.lock unnecessarily.
 #
 # =========================================================
 # TROUBLESHOOTING

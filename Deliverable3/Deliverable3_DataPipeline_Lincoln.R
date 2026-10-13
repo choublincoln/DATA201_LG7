@@ -93,6 +93,7 @@ plot <- ggplot(
     y = "Number of Listings"
   ) +
   theme_bw()
+plot
 
 ggsave(
   "output_data/price_distribution.png",

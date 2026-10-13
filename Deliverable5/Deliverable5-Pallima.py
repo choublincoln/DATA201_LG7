@@ -3,17 +3,14 @@
 # CHRISTCHURCH CENTRAL AIRBNB PRICE ANALYSIS
 # =========================================================
 
-import pandas as pd
-
+import pyreadr
 
 # =========================================================
 # 1. LOAD THE FINAL JOINED DATASET
 # =========================================================
 
 # Load the final Airbnb and rental bond joined dataset
-df = pd.read_csv(
-    "Deliverable5/input_data/Airbnb_bond_joined_final.csv"
-)
+df = pyreadr.read_r("output_data/Airbnb_bond_joined_final.rds")
 
 # Check the available columns
 print("Available columns:")
@@ -89,10 +86,7 @@ print(central_summary.head(10))
 # =========================================================
 
 # Save the Christchurch Central results
-central_summary.to_csv(
-    "Deliverable5/output_data/Christchurch_Central_Airbnb_prices.csv",
-    index=False
-)
+pyreadr.write_rds("output_data/Christchurch_Central_Airbnb_prices.rds", central_summary)
 
 print(
     "\nChristchurch Central Airbnb price results "

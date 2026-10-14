@@ -103,6 +103,10 @@
 #
 # Do not delete renv.lock unnecessarily.
 #
+#
+# Finally run: make -f "Deliverable7_(Run-Pipeline-Here)/Makefile" (for a first run)
+# or run: make -B -f "Deliverable7_(Run-Pipeline-Here)/Makefile"   (if you have ran it before already)
+#
 # =========================================================
 # TROUBLESHOOTING
 # =========================================================

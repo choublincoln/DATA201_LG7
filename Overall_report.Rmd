@@ -1,11 +1,357 @@
 ---
-title: "Overall Report"
-author: "DATA201 Group"
-date: "2026-10-13"
-output: pdf_document
+title: "DATA201 Data Wrangling Pipeline Report"
+author: "Group 7"
+output:
+  pdf_document:
+    toc: true
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+fontsize: 10pt
+geometry: margin=0.7in
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = "center",
+  fig.width = 8,
+  fig.height = 5
+)
+
+library(tidyverse)
+library(knitr)
+
+options(width = 80)
 ```
 
+# Overview
+
+This report summarises the outputs from the automated DATA201 data wrangling pipeline.
+
+The pipeline processes the Airbnb and tenancy datasets through Deliverables 3, 4 and 5. The Makefile controls the order of each stage and automatically rebuilds outputs when required.
+
+---
+
+# Deliverable 3 — Data Preparation and Initial Analysis
+
+## Combined Airbnb Data
+
+```{r d3-data}
+combined_listings <- read_csv(
+  "output_data/Deliverable3_output/combined_listings.csv",
+  show_col_types = FALSE
+)
+
+glimpse(combined_listings)
+```
+
+## Example Data
+
+Only the most useful columns are shown below to keep the table readable.
+
+```{r d3-preview}
+combined_listings |>
+  select(
+    id,
+    neighbourhood,
+    room_type,
+    price,
+    number_of_reviews,
+    month,
+    year
+  ) |>
+  head(6) |>
+  kable(
+    caption = "Example Airbnb Listings",
+    digits = 2
+  )
+```
+
+## Date Difference
+
+```{r d3-date-plot, echo=FALSE, out.width="85%"}
+knitr::include_graphics(
+  "output_data/Deliverable3_output/date_difference.png"
+)
+```
+
+## Price Distribution
+
+```{r d3-price-plot, echo=FALSE, out.width="85%"}
+knitr::include_graphics(
+  "output_data/Deliverable3_output/price_distribution.png"
+)
+```
+
+## Summary Statistics
+
+```{r d3-summary}
+summary_statistics <- read_csv(
+  "output_data/Deliverable3_output/summary_statistics.csv",
+  show_col_types = FALSE
+)
+
+summary_statistics |>
+  select(
+    variable,
+    type,
+    total_rows,
+    missing,
+    missing_percent,
+    unique_values
+  ) |>
+  kable(
+    caption = "Dataset Summary Statistics",
+    digits = 2
+  )
+```
+
+---
+
+# Deliverable 4 — Data Cleaning
+
+## Cleaned Airbnb Dataset
+
+```{r d4-airbnb}
+airbnb_cleaned <- read_csv(
+  "output_data/Deliverable4_output/Airbnb_listings_cleaned.csv",
+  show_col_types = FALSE
+)
+
+glimpse(airbnb_cleaned)
+```
+
+## Example Cleaned Airbnb Data
+
+```{r d4-airbnb-preview}
+airbnb_cleaned |>
+  select(
+    id,
+    neighbourhood,
+    room_type,
+    price,
+    availability_365,
+    month,
+    year
+  ) |>
+  head(6) |>
+  kable(
+    caption = "Cleaned Airbnb Data",
+    digits = 2
+  )
+```
+
+## Cleaned Airbnb Price Distribution
+
+The extreme top 1% of prices are excluded from this graph only so the normal price distribution is easier to read. The original data is not changed.
+
+```{r d4-airbnb-plot}
+price_limit <- quantile(
+  airbnb_cleaned$price,
+  0.99,
+  na.rm = TRUE
+)
+
+airbnb_cleaned |>
+  filter(
+    !is.na(price),
+    price <= price_limit
+  ) |>
+  ggplot(aes(x = price)) +
+  geom_histogram(
+    bins = 40
+  ) +
+  labs(
+    title = "Distribution of Cleaned Airbnb Prices",
+    subtitle = "Extreme top 1% excluded from visualisation",
+    x = "Price per Night ($NZD)",
+    y = "Number of Listings"
+  ) +
+  theme_minimal()
+```
+
+## Cleaned Tenancy Dataset
+
+```{r d4-tenancy}
+tenancy_cleaned <- read_csv(
+  "output_data/Deliverable4_output/tenancy_cleaned.csv",
+  show_col_types = FALSE
+)
+
+glimpse(tenancy_cleaned)
+```
+
+## Example Cleaned Tenancy Data
+
+```{r d4-tenancy-preview}
+tenancy_cleaned |>
+  select(
+    TimeFrame,
+    `Location Id`,
+    `Dwelling Type`,
+    `Number Of Beds`,
+    `Active Bonds`,
+    `Median Rent`
+  ) |>
+  head(6) |>
+  kable(
+    caption = "Cleaned Tenancy Data",
+    digits = 2
+  )
+```
+
+---
+
+# Deliverable 5 — Data Enrichment and Comparison
+
+## Airbnb Listings with SA2 Codes
+
+```{r d5-sa2}
+airbnb_sa2 <- read_csv(
+  "output_data/Deliverable5_output/Airbnb_listings_sa2.csv",
+  show_col_types = FALSE
+)
+
+glimpse(airbnb_sa2)
+```
+
+## Example Airbnb Listings with SA2 Codes
+
+```{r d5-sa2-preview}
+airbnb_sa2 |>
+  select(
+    id,
+    neighbourhood,
+    room_type,
+    price,
+    month,
+    year,
+    sa2_code
+  ) |>
+  head(6) |>
+  kable(
+    caption = "Airbnb Listings with SA2 Codes",
+    digits = 2
+  )
+```
+
+## Joined Airbnb and Tenancy Dataset
+
+```{r d5-joined}
+joined_data <- read_csv(
+  "output_data/Deliverable5_output/Airbnb_bond_joined_final.csv",
+  show_col_types = FALSE
+)
+
+glimpse(joined_data)
+```
+
+## Example Joined Data
+
+Only the main Airbnb and tenancy fields are shown below so the joined table remains readable.
+
+```{r d5-joined-preview}
+joined_data |>
+  select(
+    id,
+    neighbourhood,
+    price,
+    month,
+    year,
+    sa2_code,
+    `Active Bonds`,
+    `Median Rent`
+  ) |>
+  head(6) |>
+  kable(
+    caption = "Joined Airbnb and Tenancy Data",
+    digits = 2
+  )
+```
+
+## Airbnb vs Long-Term Rentals by SA3 Area
+
+```{r d5-sa3-plot, echo=FALSE, out.width="95%"}
+knitr::include_graphics(
+  "output_data/Deliverable5_output/airbnb_vs_rentals_sa3.png"
+)
+```
+
+## Christchurch Central Airbnb Prices
+
+```{r d5-central}
+central_prices <- read_csv(
+  "output_data/Deliverable5_output/Christchurch_Central_Airbnb_prices.csv",
+  show_col_types = FALSE
+)
+
+glimpse(central_prices)
+```
+
+```{r d5-central-preview}
+central_prices |>
+  select(
+    neighbourhood,
+    sa2_code,
+    price
+  ) |>
+  head(10) |>
+  kable(
+    caption = "Christchurch Central Airbnb Prices",
+    digits = 2
+  )
+```
+
+## Largest Short-Term and Long-Term Rental Price Differences
+
+```{r d5-rent-difference}
+rent_difference <- read_csv(
+  "output_data/Deliverable5_output/listings_sa3_rent_diff.csv",
+  show_col_types = FALSE
+)
+
+glimpse(rent_difference)
+```
+
+## Example Rental Price Differences
+
+```{r d5-rent-difference-preview}
+rent_difference |>
+  select(
+    neighbourhood,
+    price,
+    sa2_code,
+    `Median Rent`,
+    `price difference`,
+    SA32023_code
+  ) |>
+  head(10) |>
+  kable(
+    caption = "Short-Term vs Long-Term Rental Price Differences",
+    digits = 2
+  )
+```
+
+---
+
+# Pipeline Summary
+
+The automated pipeline performs the following stages:
+
+1. Combines the monthly Airbnb datasets.
+2. Produces the Deliverable 3 analyses.
+3. Cleans the Airbnb and tenancy datasets.
+4. Assigns geographic SA2 codes to Airbnb listings.
+5. Joins Airbnb and tenancy information.
+6. Performs the Deliverable 5 analyses.
+7. Generates this report automatically.
+
+The full pipeline can be executed using:
+
+```text
+make all
+```

@@ -6,6 +6,8 @@
 # - GNU Make
 # - R
 # - Python
+# - Required R and Python packages
+# - TinyTeX or another working LaTeX installation (for PDF rendering)
 # - VS Code (recommended)
 #
 # =========================================================
@@ -38,26 +40,31 @@
 # STEP 2: INSTALL R
 # =========================================================
 #
-# If R is not already installed, download it from vs code extensions
+# If R is not already installed, download it from:
+#
+#   https://cran.r-project.org/
 #
 # Check whether Rscript is available:
 #
 #   Rscript --version
 #
 # If "Rscript is not recognized":
-# 1. Find the folder containing Rscript.exe.
-# 2. Add its containing folder to your User Path.
+# 1. do the same thing in step 1
 #    Example:
 #
 #   C:\Program Files\R\R-4.6.1\bin
 #
 # 3. Restart VS Code and check Rscript --version again.
 #
+# Note: The VS Code R extension does not install R itself.
+#
 # =========================================================
 # STEP 3: INSTALL PYTHON
 # =========================================================
 #
-# If Python is not installed, download it from vscode extensions
+# If Python is not installed, download it from:
+#
+#   https://www.python.org/downloads/
 #
 # Check whether Python is available:
 #
@@ -65,6 +72,9 @@
 #
 # If Python is not recognized, check its installation
 # and PATH settings before running the pipeline.
+#
+# Note: The VS Code Python extension does not install
+# Python itself.
 #
 # =========================================================
 # STEP 4: OPEN THE PROJECT IN VS CODE
@@ -76,6 +86,7 @@
 # Recommended VS Code extensions:
 # - Makefile Tools
 # - R
+# - Python
 #
 # Makefile Tools can be configured to use the Make executable
 # installed on your computer.
@@ -91,21 +102,86 @@
 # This restores the R packages recorded in renv.lock.
 # Allow the process to finish before continuing.
 #
-# If a package required by the project is still missing,
-# investigate the renv status and install the required
-# dependency through renv before running the pipeline.
+# If renv is not installed or the restore command fails,
+# investigate the error before proceeding.
 #
+# If a required package is still missing, inspect the
+# project's renv configuration and install the required
+# dependency through renv.
 #
-# renv::install("tidyverse")
-# library(tidyverse)
-# renv::snapshot()
+# Example, only if tidyverse is required and missing:
 #
+#   Rscript -e "renv::install('tidyverse')"
+#
+# If the project uses renv, record intentional dependency
+# changes in renv.lock when appropriate:
+#
+#   Rscript -e "renv::snapshot()"
 #
 # Do not delete renv.lock unnecessarily.
 #
+# =========================================================
+# STEP 6: INSTALL TINYTEX FOR PDF RENDERING
+# =========================================================
 #
-# Finally run: make -f "Deliverable7_(Run-Pipeline-Here)/Makefile" (for a first run)
-# or run: make -B -f "Deliverable7_(Run-Pipeline-Here)/Makefile"   (if you have ran it before already)
+# TinyTeX provides a LaTeX installation that can be used
+# to render Overall_report.Rmd as Overall_report.pdf.
+#
+# First, check whether a PDF engine is already available.
+# In PowerShell, run:
+#
+#   where.exe pdflatex
+#
+# If a working LaTeX installation already exists, you may
+# not need to install TinyTeX.
+#
+# Otherwise, open an R terminal in the project root and run:
+#
+#   Rscript -e "install.packages('tinytex')"
+#
+# Then install the TinyTeX LaTeX distribution:
+#
+#   Rscript -e "tinytex::install_tinytex()"
+#
+# Restart the terminal after installation if necessary.
+#
+# Check the installation:
+#
+#   Rscript -e "tinytex::is_tinytex()"
+#
+# A TRUE result indicates that TinyTeX is detected.
+#
+# If PDF rendering later reports missing LaTeX packages,
+# review the error message and install the required packages.
+#
+# Note: Installing the R package 'tinytex' alone does not
+# install the full LaTeX distribution. Both commands above
+# are needed when setting up TinyTeX from scratch.
+#
+# =========================================================
+# STEP 7: RUN THE PIPELINE
+# =========================================================
+#
+# Ensure the required input CSV files and .env configuration
+# (if needed) are present in the expected project locations.
+#
+# From the DATA201_LG7-1 project root, run:
+#
+# First run:
+#
+#   make -f "Deliverable7_(Run-Pipeline-Here)/Makefile"
+#
+# Force a complete rebuild:
+#
+#   make -B -f "Deliverable7_(Run-Pipeline-Here)/Makefile"
+#
+# The default target builds the pipeline outputs and
+# renders Overall_report.pdf, provided all dependencies
+# and input files are available.
+#
+# To preview the commands without executing them:
+#
+#   make -nB -f "Deliverable7_(Run-Pipeline-Here)/Makefile" all
 #
 # =========================================================
 # TROUBLESHOOTING
@@ -123,6 +199,11 @@
 # Missing R packages:
 # Run renv::restore() and inspect any errors.
 #
+# PDF rendering fails:
+# Check that rmarkdown is installed, a working LaTeX
+# distribution is available, and the report's dependencies
+# are installed.
+#
 # API errors or rate limits:
 # Check the API configuration, .env file and request limits.
 # Never commit or share API keys.
@@ -130,6 +211,10 @@
 # Missing or incorrect output files:
 # Check the input paths, script output paths and Makefile
 # dependencies before forcing a complete rebuild.
+#
+# "missing separator" in the Makefile:
+# Check for accidentally copied Markdown code fences.
+# Makefile recipe commands must begin with a real Tab.
 #
 # =========================================================
 # IMPORTANT FOR GROUP MEMBERS

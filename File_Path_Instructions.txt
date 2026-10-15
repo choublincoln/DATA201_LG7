@@ -1,0 +1,131 @@
+# =========================================================
+# INPUT FILES AND OUTPUT FOLDER INSTRUCTIONS
+# =========================================================
+#
+# PROJECT ROOT:
+# DATA201_LG7-1/
+#
+# All file paths are relative to the project root folder
+#
+# =========================================================
+# STEP 1: INPUT FILES
+# =========================================================
+# Make a Folder named "input_data"
+# Place all input datasets in the input_data/ folder.
+#
+# Required input files include:
+#
+#   input_data/
+#       bonds.csv
+#       geographic-areas-table-2023.csv
+#       listings_november_2025.csv
+#       listings_december_2025.csv
+#       listings_january_2026.csv
+#       listings_february_2026.csv
+#       listings_march_2026.csv
+#       listings_april_2026.csv
+#       listings_may_2026.csv
+#       listings_june_2026.csv
+#       listings_july_2026.csv
+#       listings_august_2026.csv
+#
+# Monthly Airbnb files must follow the naming pattern:
+#
+#   listings_<month>_<year>.csv
+#
+# Example:
+#
+#   listings_september_2026.csv
+#
+#
+# To add another month, place its CSV file in input_data/.
+# Make can then include it when rebuilding the combined dataset.
+#
+# Keep bonds.csv and geographic-areas-table-2023.csv in
+# input_data/ because the later deliverables use these files.
+#
+# =========================================================
+# STEP 2: OUTPUT FOLDERS
+# =========================================================
+# Make a Folder named "output_data"
+# Generated files are saved in output_data/.
+#
+# The expected output structure is:
+#
+#   output_data/
+#       Deliverable3_output/
+#       Deliverable4_output/
+#       Deliverable5_output/
+#
+# Deliverable 3 outputs:
+#
+#   output_data/Deliverable3_output/
+#       combined_listings.csv
+#       highest_reviews.csv
+#       date_difference.png
+#       price_distribution.png
+#       summary_statistics.csv
+#       category_counts.csv
+#       date_summary.csv
+#
+# Deliverable 4 outputs:
+#
+#   output_data/Deliverable4_output/
+#       Airbnb_listings_cleaned.csv
+#       tenancy_cleaned.csv
+#
+# Deliverable 5 outputs:
+#
+#   output_data/Deliverable5_output/
+#       Airbnb_listings_sa2.csv
+#       Airbnb_unique_listings_sa2.csv
+#       Airbnb_bond_joined_final.csv
+#       airbnb_vs_rentals_sa3.png
+#       Christchurch_Central_Airbnb_prices.csv
+#       listings_sa3_rent_diff.csv
+#
+# =========================================================
+# STEP 3: API KEY AND .env CONFIGURATION
+# =========================================================
+#
+# Deliverable 5 uses the DataFinder API to retrieve
+# geographic area information for Airbnb listings.
+#
+# An API key is required for the API lookup script to work.
+#
+# 1. Obtain a DataFinder API key from the relevant
+#    DataFinder service. https://koordinates.com/ by creating an account
+#
+# 2. Create a file named ".env" in the project root folder
+#    (DATA201_LG7-1/), if it does not already exist.
+#
+# 3. Add your API key to the .env file using this format:
+#
+#   DATAFINDER_API_KEY=your_api_key_here
+#
+# Replace "your_api_key_here" with your actual API key.
+# Do not include quotation marks unless required by the
+# API configuration.
+#
+# 4. Save the .env file.
+#
+# 5. Make sure the Python API script loads the key from
+#    the .env file using the appropriate environment
+#    variable name: DATAFINDER_API_KEY.
+#
+# 6. Install the required Python packages if they are
+#    missing from your Python environment.
+#
+# The API script uses the DataFinder API to look up
+# geographic area information for Airbnb listings.
+#
+# IMPORTANT:
+# - Do not upload or commit your .env file to GitHub.
+# - Make sure ".env" is listed in .gitignore.
+# - Never share your API key publicly.
+# - Each group member should configure their own API key
+#   if they need to run the API lookup.
+# - API requests may be subject to rate limits.
+#   Avoid repeatedly forcing the API script to run.
+#
+# =========================================================

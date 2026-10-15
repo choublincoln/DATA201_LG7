@@ -1,0 +1,146 @@
+# =========================================================
+# DATA201 - HOW TO SET UP AND RUN THE DATA WRANGLING PIPELINE
+# =========================================================
+#
+# REQUIREMENTS:
+# - GNU Make
+# - R
+# - Python
+# - VS Code (recommended)
+#
+# =========================================================
+# STEP 1: INSTALL GNU MAKE
+# =========================================================
+#
+# Open a terminal in VS Code and run:
+#
+#   winget install GnuWin32.Make
+#
+# Close and reopen VS Code after installation.
+#
+# Check whether Make is available:
+#
+#   make --version
+#
+# If "make is not recognized":
+# 1. Search Windows for "Edit environment variables for your account".
+# 2. Open the User variables Path settings.
+# 3. Add the Make installation folder:
+#
+#   C:\Program Files (x86)\GnuWin32\bin
+#
+# 4. Save the changes and restart VS Code.
+#
+# Alternatively, configure Makefile: Make Path in VS Code
+# settings to point directly to the installed make.exe.
+#
+# =========================================================
+# STEP 2: INSTALL R
+# =========================================================
+#
+# If R is not already installed, download it from vs code extensions
+#
+# Check whether Rscript is available:
+#
+#   Rscript --version
+#
+# If "Rscript is not recognized":
+# 1. Find the folder containing Rscript.exe.
+# 2. Add its containing folder to your User Path.
+#    Example:
+#
+#   C:\Program Files\R\R-4.6.1\bin
+#
+# 3. Restart VS Code and check Rscript --version again.
+#
+# =========================================================
+# STEP 3: INSTALL PYTHON
+# =========================================================
+#
+# If Python is not installed, download it from vscode extensions
+#
+# Check whether Python is available:
+#
+#   python --version
+#
+# If Python is not recognized, check its installation
+# and PATH settings before running the pipeline.
+#
+# =========================================================
+# STEP 4: OPEN THE PROJECT IN VS CODE
+# =========================================================
+#
+# Open the DATA201_LG7-1 project root folder.
+# Do not open only the Deliverable7 folder.
+#
+# Recommended VS Code extensions:
+# - Makefile Tools
+# - R
+#
+# Makefile Tools can be configured to use the Make executable
+# installed on your computer.
+#
+# =========================================================
+# STEP 5: RESTORE R PROJECT DEPENDENCIES
+# =========================================================
+#
+# Open a terminal in the project root folder and run:
+#
+#   Rscript -e "renv::restore()"
+#
+# This restores the R packages recorded in renv.lock.
+# Allow the process to finish before continuing.
+#
+# If a package required by the project is still missing,
+# investigate the renv status and install the required
+# dependency through renv before running the pipeline.
+#
+#
+# renv::install("tidyverse")
+# library(tidyverse)
+# renv::snapshot()
+#
+#
+# Do not delete renv.lock unnecessarily.
+#
+#
+# Finally run: make -f "Deliverable7_(Run-Pipeline-Here)/Makefile" (for a first run)
+# or run: make -B -f "Deliverable7_(Run-Pipeline-Here)/Makefile"   (if you have ran it before already)
+#
+# =========================================================
+# TROUBLESHOOTING
+# =========================================================
+#
+# "make is not recognized":
+# Check the Make installation and PATH.
+#
+# "Rscript is not recognized":
+# Check the R installation and PATH.
+#
+# "python is not recognized":
+# Check the Python installation and PATH.
+#
+# Missing R packages:
+# Run renv::restore() and inspect any errors.
+#
+# API errors or rate limits:
+# Check the API configuration, .env file and request limits.
+# Never commit or share API keys.
+#
+# Missing or incorrect output files:
+# Check the input paths, script output paths and Makefile
+# dependencies before forcing a complete rebuild.
+#
+# =========================================================
+# IMPORTANT FOR GROUP MEMBERS
+# =========================================================
+#
+# Keep these Makefile settings portable:
+#
+#   PYTHON ?= python
+#   RSCRIPT ?= Rscript
+#
+# Do not hardcode another person's computer-specific paths.
+# Each group member should configure their own environment.
+#
+# =========================================================

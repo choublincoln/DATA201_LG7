@@ -1,75 +1,61 @@
+
 # =========================================================
-# 1. IMPORT AND COMBINE DATA
+# COMBINED AIRBNB DATASET PIPELINE
 # =========================================================
 
 library(tidyverse)
+library(lubridate)
 
-# Import each monthly dataset, keep Christchurch City listings,
-# and add the corresponding month and year.
+# =========================================================
+# 1. DISCOVER INPUT FILES
+# =========================================================
 
-data_october <- read_csv("input_data/listings_october.csv") |>
-  filter(neighbourhood_group == "Christchurch City") |>
-  mutate(month = "October", year = 2025)
+# Find all monthly Airbnb CSV files
+input_files <- list.files(path = "input_data", pattern = "^listings_.*\\.csv$", full.names = TRUE)
 
-data_november <- read_csv("input_data/listings_november.csv") |>
-  filter(neighbourhood_group == "Christchurch City") |>
-  mutate(month = "November", year = 2025)
+# Stop if no matching files are found
+if (length(input_files) == 0) {
+  stop("No monthly Airbnb CSV files found in input_data/.")
+}
 
-data_december <- read_csv("input_data/listings_december.csv") |>
-  filter(neighbourhood_group == "Christchurch City") |>
-  mutate(month = "December", year = 2025)
+# =========================================================
+# 2. IMPORT AND COMBINE DATA
+# =========================================================
 
-data_january <- read_csv("input_data/listings_january.csv") |>
-  filter(neighbourhood_group == "Christchurch City") |>
-  mutate(month = "January", year = 2026)
+combined_listings <- map_dfr(input_files, function(file_path) {
+  
+  # Extract the month and year from the filename
+  file_name <- basename(file_path)
+  month_year <- str_remove(file_name, "^listings_")
+  month_year <- str_remove(month_year, "\\.csv$")
+  
+  # Convert the month and year into a date
+  snapshot_date <- parse_date_time(month_year, orders = "B_Y", quiet = TRUE)
+  
+  # Stop if the filename does not contain a valid month and year
+  if (is.na(snapshot_date)) {
+    stop(paste("Could not determine month and year from filename:",
+               file_name,
+               "- use a format such as listings_october_2025.csv"))
+  }
+  
+  # Read the monthly dataset
+  monthly_listings <- read_csv(file_path, show_col_types = FALSE)
+  
+  # Filter Christchurch City listings and add month/year
+  monthly_listings |>
+    filter(neighbourhood_group == "Christchurch City") |>
+    mutate(month = month.name[month(snapshot_date)], year = year(snapshot_date))
+})
 
-data_february <- read_csv("input_data/listings_february.csv") |>
-  filter(neighbourhood_group == "Christchurch City") |>
-  mutate(month = "February", year = 2026)
+combined_listings <- combined_listings |>
+  mutate(month = factor(month, levels = month.name, ordered = TRUE)) |>
+  arrange(year, month) |>
+  mutate(month = as.character(month))
 
-data_march <- read_csv("input_data/listings_march.csv") |>
-  filter(neighbourhood_group == "Christchurch City") |>
-  mutate(month = "March", year = 2026)
+# =========================================================
+# 3. PUBLISH
+# =========================================================
 
-data_april <- read_csv("input_data/listings_april.csv") |>
-  filter(neighbourhood_group == "Christchurch City") |>
-  mutate(month = "April", year = 2026)
-
-data_may <- read_csv("input_data/listings_may.csv") |>
-  filter(neighbourhood_group == "Christchurch City") |>
-  mutate(month = "May", year = 2026)
-
-data_june <- read_csv("input_data/listings_june.csv") |>
-  filter(neighbourhood_group == "Christchurch City") |>
-  mutate(month = "June", year = 2026)
-
-data_july <- read_csv("input_data/listings_july.csv") |>
-  filter(neighbourhood_group == "Christchurch City") |>
-  mutate(month = "July", year = 2026)
-
-data_august <- read_csv("input_data/listings_august.csv") |>
-  filter(neighbourhood_group == "Christchurch City") |>
-  mutate(month = "August", year = 2026)
-
-# Combine all monthly Christchurch listings into one dataset.
-
-listings_oct_to_august <- bind_rows(
-  data_october,
-  data_november,
-  data_december,
-  data_january,
-  data_february,
-  data_march,
-  data_april,
-  data_may,
-  data_june,
-  data_july,
-  data_august
-)
-
-
-# Save the combined dataset.
-# The input copy allows the pipeline to use the combined data later.
-
-
-saveRDS(listings_oct_to_august, file = "output_data/listings_oct_to_august.rds")
+# Save the combined dataset
+write_csv(combined_listings, "output_data/Deliverable3_output/combined_listings.csv")

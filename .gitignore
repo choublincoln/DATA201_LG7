@@ -57,5 +57,5 @@ output_data/
 # Ignoring input data folder to avoid uploading large files to GitHub
 input_data/
 
-# Report PDF for yourself
-report.pdf/
+# Overall report
+Overall_report.pdf

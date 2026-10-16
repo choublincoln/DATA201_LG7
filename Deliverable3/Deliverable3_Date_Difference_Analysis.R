@@ -1,4 +1,3 @@
-
 # =========================================================
 # EAN'S DATA WRANGLING PIPELINE
 # =========================================================
@@ -40,27 +39,30 @@ listings_Ean_filtered <- combined_listings |>
 # Add a date for each monthly dataset and calculate the
 # number of days between the dataset date and last review date
 listings_Ean_filtered <- listings_Ean_filtered |>
-  mutate(dataset_date = case_when(
-      month == "October" & year == 2025 ~ as.Date("2025-10-30"),
-      month == "November" & year == 2025 ~ as.Date("2025-11-30"),
-      month == "December" & year == 2025 ~ as.Date("2025-12-30"),
-      month == "January" & year == 2026 ~ as.Date("2026-01-30"),
-      month == "February" & year == 2026 ~ as.Date("2026-02-28"),
-      month == "March" & year == 2026 ~ as.Date("2026-03-30"),
-      month == "April" & year == 2026 ~ as.Date("2026-04-30"),
-      month == "May" & year == 2026 ~ as.Date("2026-05-30"),
-      month == "June" & year == 2026 ~ as.Date("2026-06-30"),
-      month == "July" & year == 2026 ~ as.Date("2026-07-30"),
-      month == "August" & year == 2026 ~ as.Date("2026-08-30"),
-      TRUE ~ as.Date(NA)),
-      
+  mutate(
+    month_number = match(month, month.name),
+    
+    dataset_date = as.Date(
+      paste(year, month_number, "01", sep = "-"),
+      format = "%Y-%m-%d"
+    ),
+    
+    # Calculate the last calendar day of each month
+    dataset_date = as.Date(
+      format(dataset_date + 32, "%Y-%m-01")
+    ) - 1,
+    
     last_review = as.Date(last_review),
+    
     day_difference_review = as.numeric(dataset_date - last_review)
-  )
+  ) |>
+  select(-month_number)
+
 
 # Remove rows with invalid dataset dates
 listings_Ean_filtered <- listings_Ean_filtered |>
   drop_na(dataset_date)
+
 
 # Exclude late reviews causing negative values
 listings_Ean_filtered <- listings_Ean_filtered |>
@@ -89,9 +91,10 @@ plot <- ggplot(
        x = "Days Since Last Review",
        y = "Number of Listings") + theme_bw()
 
+
 # Save the plot
 ggsave("output_data/Deliverable3_output/date_difference.png",
-        plot = plot,
-        width = 6,
-        height = 4,
-        dpi = 150)
+       plot = plot,
+       width = 6,
+       height = 4,
+       dpi = 150)
